@@ -37,6 +37,9 @@
                         {{ trans('cruds.transaction.fields.status') }}
                     </th>
                     <th>
+                        {{ trans('cruds.transaction.fields.remarks') }}
+                    </th>
+                    <th>
                         &nbsp;
                     </th>
                 </tr>
@@ -97,6 +100,7 @@
 { data: 'customer_name', name: 'customer_name' },
 { data: 'amount', name: 'amount' },
 { data: 'status', name: 'status' },
+{ data: 'remarks', name: 'remarks' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
