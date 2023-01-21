@@ -40,9 +40,6 @@ class UpdateTransactionRequest extends FormRequest
                 'max:255',
                 'required',
             ],
-            'status' => [
-                'required',
-            ],
             'deposit_no' => [
                 'string',
                 'max:255',
