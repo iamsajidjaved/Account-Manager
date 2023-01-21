@@ -35,6 +35,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
 
     // Transaction
     Route::delete('transactions/destroy', 'TransactionController@massDestroy')->name('transactions.massDestroy');
+    Route::post('transactions/media', 'TransactionController@storeMedia')->name('transactions.storeMedia');
+    Route::post('transactions/ckmedia', 'TransactionController@storeCKEditorImages')->name('transactions.storeCKEditorImages');
     Route::resource('transactions', 'TransactionController');
 
     // Group

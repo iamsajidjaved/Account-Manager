@@ -123,7 +123,7 @@ return [
         'fields'         => [
             'id'                      => 'ID',
             'id_helper'               => ' ',
-            'customer_name'           => 'Customer Name',
+            'customer_name'           => 'Name',
             'customer_name_helper'    => ' ',
             'amount'                  => 'Amount',
             'amount_helper'           => ' ',
