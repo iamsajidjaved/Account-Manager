@@ -25,6 +25,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.transaction.fields.transaction_type') }}
+                        </th>
+                        <td>
+                            {{ App\Models\Transaction::TRANSACTION_TYPE_RADIO[$transaction->transaction_type] ?? '' }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.transaction.fields.customer_name') }}
                         </th>
                         <td>
@@ -65,22 +73,6 @@
                     </tr>
                     <tr>
                         <th>
-                            {{ trans('cruds.transaction.fields.beneficiary_bank') }}
-                        </th>
-                        <td>
-                            {{ $transaction->beneficiary_bank }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.transaction.fields.withdraw_purpose') }}
-                        </th>
-                        <td>
-                            {{ $transaction->withdraw_purpose }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
                             {{ trans('cruds.transaction.fields.entry_user') }}
                         </th>
                         <td>
@@ -93,14 +85,6 @@
                         </th>
                         <td>
                             {{ $transaction->entry_datetime }}
-                        </td>
-                    </tr>
-                    <tr>
-                        <th>
-                            {{ trans('cruds.transaction.fields.transaction_type') }}
-                        </th>
-                        <td>
-                            {{ App\Models\Transaction::TRANSACTION_TYPE_RADIO[$transaction->transaction_type] ?? '' }}
                         </td>
                     </tr>
                     <tr>
@@ -133,6 +117,14 @@
                         </th>
                         <td>
                             {{ $transaction->approve_datetime }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.transaction.fields.remarks') }}
+                        </th>
+                        <td>
+                            {{ $transaction->remarks }}
                         </td>
                     </tr>
                 </tbody>

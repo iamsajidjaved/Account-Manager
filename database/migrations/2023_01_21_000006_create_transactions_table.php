@@ -10,17 +10,16 @@ class CreateTransactionsTable extends Migration
     {
         Schema::create('transactions', function (Blueprint $table) {
             $table->bigIncrements('id');
+            $table->string('transaction_type');
             $table->string('customer_name')->unique();
             $table->float('amount', 15, 4);
             $table->string('reference');
             $table->string('status');
-            $table->string('beneficiary_bank')->nullable();
-            $table->string('withdraw_purpose')->nullable();
             $table->datetime('entry_datetime')->nullable();
-            $table->string('transaction_type');
             $table->string('deposit_no')->nullable();
             $table->string('approver_remarks')->nullable();
             $table->datetime('approve_datetime')->nullable();
+            $table->string('remarks')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

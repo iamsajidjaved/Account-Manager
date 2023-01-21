@@ -25,6 +25,9 @@
                         {{ trans('cruds.transaction.fields.id') }}
                     </th>
                     <th>
+                        {{ trans('cruds.transaction.fields.transaction_type') }}
+                    </th>
+                    <th>
                         {{ trans('cruds.transaction.fields.customer_name') }}
                     </th>
                     <th>
@@ -34,7 +37,7 @@
                         {{ trans('cruds.transaction.fields.status') }}
                     </th>
                     <th>
-                        {{ trans('cruds.transaction.fields.transaction_type') }}
+                        {{ trans('cruds.transaction.fields.remarks') }}
                     </th>
                     <th>
                         &nbsp;
@@ -93,10 +96,11 @@
     columns: [
       { data: 'placeholder', name: 'placeholder' },
 { data: 'id', name: 'id' },
+{ data: 'transaction_type', name: 'transaction_type' },
 { data: 'customer_name', name: 'customer_name' },
 { data: 'amount', name: 'amount' },
 { data: 'status', name: 'status' },
-{ data: 'transaction_type', name: 'transaction_type' },
+{ data: 'remarks', name: 'remarks' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
