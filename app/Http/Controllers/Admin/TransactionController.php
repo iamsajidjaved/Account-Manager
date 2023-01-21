@@ -13,6 +13,7 @@ use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
+use Illuminate\Support\Facades\Auth;
 
 class TransactionController extends Controller
 {
@@ -73,7 +74,8 @@ class TransactionController extends Controller
     {
         abort_if(Gate::denies('transaction_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $group_id = Auth::user()->group_id;
+        $banks = Bank::select(['bank_name', 'id'])->where('group_id', $group_id)->get();
 
         return view('admin.transactions.create', compact('banks'));
     }

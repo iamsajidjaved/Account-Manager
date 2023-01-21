@@ -48,7 +48,7 @@
                 <label class="required" for="bank_id">{{ trans('cruds.transaction.fields.bank') }}</label>
                 <select class="form-control select2 {{ $errors->has('bank') ? 'is-invalid' : '' }}" name="bank_id" id="bank_id" required>
                     @foreach($banks as $id => $entry)
-                        <option value="{{ $id }}" {{ old('bank_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>
+                        <option value="{{ $entry->id }}" {{ old('bank_id') == $entry->id ? 'selected' : '' }}>{{ $entry->bank_name }}</option>
                     @endforeach
                 </select>
                 @if($errors->has('bank'))
@@ -101,7 +101,4 @@
         </form>
     </div>
 </div>
-
-
-
 @endsection
