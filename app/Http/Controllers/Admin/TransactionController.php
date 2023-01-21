@@ -45,6 +45,9 @@ class TransactionController extends Controller
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : '';
             });
+            $table->editColumn('transaction_type', function ($row) {
+                return $row->transaction_type ? Transaction::TRANSACTION_TYPE_RADIO[$row->transaction_type] : '';
+            });
             $table->editColumn('customer_name', function ($row) {
                 return $row->customer_name ? $row->customer_name : '';
             });
@@ -54,8 +57,8 @@ class TransactionController extends Controller
             $table->editColumn('status', function ($row) {
                 return $row->status ? Transaction::STATUS_SELECT[$row->status] : '';
             });
-            $table->editColumn('transaction_type', function ($row) {
-                return $row->transaction_type ? Transaction::TRANSACTION_TYPE_RADIO[$row->transaction_type] : '';
+            $table->editColumn('remarks', function ($row) {
+                return $row->remarks ? $row->remarks : '';
             });
 
             $table->rawColumns(['actions', 'placeholder']);

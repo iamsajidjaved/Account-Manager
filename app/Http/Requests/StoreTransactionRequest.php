@@ -17,6 +17,9 @@ class StoreTransactionRequest extends FormRequest
     public function rules()
     {
         return [
+            'transaction_type' => [
+                'required',
+            ],
             'customer_name' => [
                 'string',
                 'max:255',
@@ -40,18 +43,10 @@ class StoreTransactionRequest extends FormRequest
             'status' => [
                 'required',
             ],
-            'beneficiary_bank' => [
+            'remarks' => [
                 'string',
                 'max:255',
                 'nullable',
-            ],
-            'withdraw_purpose' => [
-                'string',
-                'max:255',
-                'nullable',
-            ],
-            'transaction_type' => [
-                'required',
             ],
         ];
     }

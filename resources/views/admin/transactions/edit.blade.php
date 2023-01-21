@@ -11,6 +11,21 @@
             @method('PUT')
             @csrf
             <div class="form-group">
+                <label class="required">{{ trans('cruds.transaction.fields.transaction_type') }}</label>
+                @foreach(App\Models\Transaction::TRANSACTION_TYPE_RADIO as $key => $label)
+                    <div class="form-check {{ $errors->has('transaction_type') ? 'is-invalid' : '' }}">
+                        <input class="form-check-input" type="radio" id="transaction_type_{{ $key }}" name="transaction_type" value="{{ $key }}" {{ old('transaction_type', $transaction->transaction_type) === (string) $key ? 'checked' : '' }} required>
+                        <label class="form-check-label" for="transaction_type_{{ $key }}">{{ $label }}</label>
+                    </div>
+                @endforeach
+                @if($errors->has('transaction_type'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('transaction_type') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.transaction.fields.transaction_type_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <label class="required" for="customer_name">{{ trans('cruds.transaction.fields.customer_name') }}</label>
                 <input class="form-control {{ $errors->has('customer_name') ? 'is-invalid' : '' }}" type="text" name="customer_name" id="customer_name" value="{{ old('customer_name', $transaction->customer_name) }}" required>
                 @if($errors->has('customer_name'))
@@ -70,41 +85,6 @@
                 <span class="help-block">{{ trans('cruds.transaction.fields.status_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="beneficiary_bank">{{ trans('cruds.transaction.fields.beneficiary_bank') }}</label>
-                <input class="form-control {{ $errors->has('beneficiary_bank') ? 'is-invalid' : '' }}" type="text" name="beneficiary_bank" id="beneficiary_bank" value="{{ old('beneficiary_bank', $transaction->beneficiary_bank) }}">
-                @if($errors->has('beneficiary_bank'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('beneficiary_bank') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.beneficiary_bank_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="withdraw_purpose">{{ trans('cruds.transaction.fields.withdraw_purpose') }}</label>
-                <input class="form-control {{ $errors->has('withdraw_purpose') ? 'is-invalid' : '' }}" type="text" name="withdraw_purpose" id="withdraw_purpose" value="{{ old('withdraw_purpose', $transaction->withdraw_purpose) }}">
-                @if($errors->has('withdraw_purpose'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('withdraw_purpose') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.withdraw_purpose_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label class="required">{{ trans('cruds.transaction.fields.transaction_type') }}</label>
-                @foreach(App\Models\Transaction::TRANSACTION_TYPE_RADIO as $key => $label)
-                    <div class="form-check {{ $errors->has('transaction_type') ? 'is-invalid' : '' }}">
-                        <input class="form-check-input" type="radio" id="transaction_type_{{ $key }}" name="transaction_type" value="{{ $key }}" {{ old('transaction_type', $transaction->transaction_type) === (string) $key ? 'checked' : '' }} required>
-                        <label class="form-check-label" for="transaction_type_{{ $key }}">{{ $label }}</label>
-                    </div>
-                @endforeach
-                @if($errors->has('transaction_type'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('transaction_type') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.transaction_type_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label for="deposit_no">{{ trans('cruds.transaction.fields.deposit_no') }}</label>
                 <input class="form-control {{ $errors->has('deposit_no') ? 'is-invalid' : '' }}" type="text" name="deposit_no" id="deposit_no" value="{{ old('deposit_no', $transaction->deposit_no) }}">
                 @if($errors->has('deposit_no'))
@@ -147,6 +127,16 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.transaction.fields.approve_datetime_helper') }}</span>
+            </div>
+            <div class="form-group">
+                <label for="remarks">{{ trans('cruds.transaction.fields.remarks') }}</label>
+                <input class="form-control {{ $errors->has('remarks') ? 'is-invalid' : '' }}" type="text" name="remarks" id="remarks" value="{{ old('remarks', $transaction->remarks) }}">
+                @if($errors->has('remarks'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('remarks') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.transaction.fields.remarks_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">

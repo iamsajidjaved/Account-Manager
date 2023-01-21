@@ -35,20 +35,19 @@ class Transaction extends Model
     ];
 
     protected $fillable = [
+        'transaction_type',
         'customer_name',
         'amount',
         'bank_id',
         'reference',
         'status',
-        'beneficiary_bank',
-        'withdraw_purpose',
         'entry_user_id',
         'entry_datetime',
-        'transaction_type',
         'deposit_no',
         'approver_id',
         'approver_remarks',
         'approve_datetime',
+        'remarks',
         'created_at',
         'updated_at',
         'deleted_at',

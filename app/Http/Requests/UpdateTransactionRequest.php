@@ -17,6 +17,9 @@ class UpdateTransactionRequest extends FormRequest
     public function rules()
     {
         return [
+            'transaction_type' => [
+                'required',
+            ],
             'customer_name' => [
                 'string',
                 'max:255',
@@ -40,19 +43,6 @@ class UpdateTransactionRequest extends FormRequest
             'status' => [
                 'required',
             ],
-            'beneficiary_bank' => [
-                'string',
-                'max:255',
-                'nullable',
-            ],
-            'withdraw_purpose' => [
-                'string',
-                'max:255',
-                'nullable',
-            ],
-            'transaction_type' => [
-                'required',
-            ],
             'deposit_no' => [
                 'string',
                 'max:255',
@@ -65,6 +55,11 @@ class UpdateTransactionRequest extends FormRequest
             ],
             'approve_datetime' => [
                 'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+                'nullable',
+            ],
+            'remarks' => [
+                'string',
+                'max:255',
                 'nullable',
             ],
         ];
