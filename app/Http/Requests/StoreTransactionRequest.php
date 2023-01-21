@@ -40,9 +40,6 @@ class StoreTransactionRequest extends FormRequest
                 'max:255',
                 'required',
             ],
-            'status' => [
-                'required',
-            ],
             'remarks' => [
                 'string',
                 'max:255',
