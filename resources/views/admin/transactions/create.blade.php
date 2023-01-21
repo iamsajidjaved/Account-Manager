@@ -69,21 +69,6 @@
                 <span class="help-block">{{ trans('cruds.transaction.fields.reference_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required">{{ trans('cruds.transaction.fields.status') }}</label>
-                <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
-                    <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
-                    @foreach(App\Models\Transaction::STATUS_SELECT as $key => $label)
-                        <option value="{{ $key }}" {{ old('status', '') === (string) $key ? 'selected' : '' }}>{{ $label }}</option>
-                    @endforeach
-                </select>
-                @if($errors->has('status'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('status') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.status_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label for="remarks">{{ trans('cruds.transaction.fields.remarks') }}</label>
                 <input class="form-control {{ $errors->has('remarks') ? 'is-invalid' : '' }}" type="text" name="remarks" id="remarks" value="{{ old('remarks', '') }}">
                 @if($errors->has('remarks'))

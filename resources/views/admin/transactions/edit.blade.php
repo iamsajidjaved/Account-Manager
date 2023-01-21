@@ -70,8 +70,8 @@
                 <span class="help-block">{{ trans('cruds.transaction.fields.reference_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required">{{ trans('cruds.transaction.fields.status') }}</label>
-                <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status" required>
+                <label>{{ trans('cruds.transaction.fields.status') }}</label>
+                <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status">
                     <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                     @foreach(App\Models\Transaction::STATUS_SELECT as $key => $label)
                         <option value="{{ $key }}" {{ old('status', $transaction->status) === (string) $key ? 'selected' : '' }}>{{ $label }}</option>

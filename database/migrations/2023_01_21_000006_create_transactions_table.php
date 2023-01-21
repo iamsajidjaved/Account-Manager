@@ -14,7 +14,7 @@ class CreateTransactionsTable extends Migration
             $table->string('customer_name')->unique();
             $table->float('amount', 15, 4);
             $table->string('reference');
-            $table->string('status');
+            $table->string('status')->nullable();
             $table->datetime('entry_datetime')->nullable();
             $table->string('deposit_no')->nullable();
             $table->string('approver_remarks')->nullable();
