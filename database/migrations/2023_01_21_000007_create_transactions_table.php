@@ -19,7 +19,7 @@ class CreateTransactionsTable extends Migration
             $table->string('deposit_no')->nullable();
             $table->string('approver_remarks')->nullable();
             $table->datetime('approve_datetime')->nullable();
-            $table->string('remarks')->nullable();
+            $table->longText('remarks')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

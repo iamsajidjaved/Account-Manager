@@ -40,11 +40,6 @@ class StoreTransactionRequest extends FormRequest
                 'max:255',
                 'required',
             ],
-            'remarks' => [
-                'string',
-                'max:255',
-                'nullable',
-            ],
         ];
     }
 }

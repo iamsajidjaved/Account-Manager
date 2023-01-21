@@ -124,7 +124,7 @@
                             {{ trans('cruds.transaction.fields.remarks') }}
                         </th>
                         <td>
-                            {{ $transaction->remarks }}
+                            {!! $transaction->remarks !!}
                         </td>
                     </tr>
                 </tbody>
