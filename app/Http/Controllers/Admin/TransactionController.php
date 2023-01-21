@@ -80,6 +80,20 @@ class TransactionController extends Controller
 
     public function store(StoreTransactionRequest $request)
     {
+
+        $transaction_type = $request->transaction_type;
+        $bank_id = $request->bank_id;
+        $amount = $request->amount;
+
+        $bank = Bank::find($bank_id);
+        if($transaction_type=="Withdrawal"){
+            $bank->balance = $bank->balance - $amount;
+        }else if($transaction_type=="Deposit"){
+            $bank->balance = $bank->balance + $amount; 
+        }
+
+        $bank->save();
+
         $transaction = Transaction::create($request->all());
 
         return redirect()->route('admin.transactions.index');
