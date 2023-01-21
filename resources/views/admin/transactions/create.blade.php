@@ -13,7 +13,7 @@
                 <label class="required">{{ trans('cruds.transaction.fields.transaction_type') }}</label>
                 @foreach(App\Models\Transaction::TRANSACTION_TYPE_RADIO as $key => $label)
                     <div class="form-check {{ $errors->has('transaction_type') ? 'is-invalid' : '' }}">
-                        <input class="form-check-input" type="radio" id="transaction_type_{{ $key }}" name="transaction_type" value="{{ $key }}" {{ old('transaction_type', '') === (string) $key ? 'checked' : '' }} required>
+                        <input class="form-check-input" type="radio" id="transaction_type_{{ $key }}" name="transaction_type" value="{{ $key }}" {{ old('transaction_type', 'Deposit') === (string) $key ? 'checked' : '' }} required>
                         <label class="form-check-label" for="transaction_type_{{ $key }}">{{ $label }}</label>
                     </div>
                 @endforeach
