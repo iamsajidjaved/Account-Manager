@@ -97,6 +97,9 @@ class TransactionController extends Controller
 
         $bank->save();
 
+        $request->request->add(['entry_user_id' => Auth::id()]);
+        $request->request->add(['entry_datetime' => now()]);
+
         $transaction = Transaction::create($request->all());
 
         return redirect()->route('admin.transactions.index');
@@ -117,7 +120,7 @@ class TransactionController extends Controller
 
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
-                // undo old operation 
+        // undo old operation 
         $transaction_type = $transaction->transaction_type;
         $bank_id = $transaction->bank_id;
         $amount = $transaction->amount;
@@ -138,17 +141,16 @@ class TransactionController extends Controller
             $amount = $request->amount;
 
             $bank = Bank::find($bank_id);
-            if($transaction_type=="Withdrawal"){
-                $bank->balance = $bank->balance - $amount;
-            }else if($transaction_type=="Deposit"){
-                $bank->balance = $bank->balance + $amount; 
-            }
-
+        if($transaction_type=="Withdrawal"){
+            $bank->balance = $bank->balance - $amount;
+        }else if($transaction_type=="Deposit"){
+            $bank->balance = $bank->balance + $amount; 
+        }
             $bank->save();
         }
 
         if($status=="Approved" || $status=="Void"){
-            $request->request->add(['approver' => Auth::user()->name]);
+            $request->request->add(['approver_id' => Auth::id()]);
             $request->request->add(['approve_datetime' => now()]);
         }
 

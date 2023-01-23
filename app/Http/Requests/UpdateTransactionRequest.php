@@ -17,9 +17,6 @@ class UpdateTransactionRequest extends FormRequest
     public function rules()
     {
         return [
-            'transaction_type' => [
-                'required',
-            ],
             'customer_name' => [
                 'string',
                 'max:255',
