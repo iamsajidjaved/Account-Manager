@@ -13,14 +13,15 @@ class Transaction extends Model
     use SoftDeletes;
     use HasFactory;
 
-    public const STATUS_SELECT = [
-        'Approved' => 'Approved',
-        'Void'     => 'Void',
-    ];
-
     public const TRANSACTION_TYPE_RADIO = [
         'Deposit'    => 'Deposit',
         'Withdrawal' => 'Withdrawal',
+    ];
+
+    public const STATUS_SELECT = [
+        'Pending'  => 'Pending',
+        'Approved' => 'Approved',
+        'Void'     => 'Void',
     ];
 
     public $table = 'transactions';
