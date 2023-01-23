@@ -21,16 +21,6 @@
                 <span class="help-block">{{ trans('cruds.bank.fields.bank_name_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required" for="balance">{{ trans('cruds.bank.fields.balance') }}</label>
-                <input class="form-control {{ $errors->has('balance') ? 'is-invalid' : '' }}" type="number" name="balance" id="balance" value="{{ old('balance', $bank->balance) }}" step="0.0001" required>
-                @if($errors->has('balance'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('balance') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.bank.fields.balance_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label class="required" for="country_id">{{ trans('cruds.bank.fields.country') }}</label>
                 <select class="form-control select2 {{ $errors->has('country') ? 'is-invalid' : '' }}" name="country_id" id="country_id" required>
                     @foreach($countries as $id => $entry)

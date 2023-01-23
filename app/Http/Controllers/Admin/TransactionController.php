@@ -54,11 +54,11 @@ class TransactionController extends Controller
             $table->editColumn('amount', function ($row) {
                 return $row->amount ? $row->amount : '';
             });
+            $table->editColumn('reference', function ($row) {
+                return $row->reference ? $row->reference : '';
+            });
             $table->editColumn('status', function ($row) {
                 return $row->status ? Transaction::STATUS_SELECT[$row->status] : '';
-            });
-            $table->editColumn('remarks', function ($row) {
-                return $row->remarks ? $row->remarks : '';
             });
 
             $table->rawColumns(['actions', 'placeholder']);
@@ -100,38 +100,6 @@ class TransactionController extends Controller
 
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
-        // undo old operation 
-        $transaction_type = $transaction->transaction_type;
-        $bank_id = $transaction->bank_id;
-        $amount = $transaction->amount;
-        $status = $transaction->status;
-
-        $bank = Bank::find($bank_id);
-        if($transaction_type=="Withdrawal"){
-            $bank->balance = $bank->balance + $amount;
-        }else if($transaction_type=="Deposit"){
-            $bank->balance = $bank->balance - $amount; 
-        }
-        $bank->save();
-
-
-        if($status=="Approved" || $status=="Pending"){
-        // do new operation 
-        $transaction_type = $request->transaction_type;
-        $bank_id = $request->bank_id;
-        $amount = $request->amount;
-
-        $bank = Bank::find($bank_id);
-        if($transaction_type=="Withdrawal"){
-            $bank->balance = $bank->balance - $amount;
-        }else if($transaction_type=="Deposit"){
-            $bank->balance = $bank->balance + $amount; 
-        }
-
-        $bank->save();
-    }
-
-
         $transaction->update($request->all());
 
         return redirect()->route('admin.transactions.index');
@@ -149,19 +117,6 @@ class TransactionController extends Controller
     public function destroy(Transaction $transaction)
     {
         abort_if(Gate::denies('transaction_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $transaction_type = $transaction->transaction_type;
-        $amount = $transaction->amount;
-        $bank_id = $transaction->bank_id;
-        
-        $bank = Bank::find($bank_id);
-        if($transaction_type=="Withdrawal"){
-            $bank->balance = $bank->balance + $amount;
-        }else if($transaction_type=="Deposit"){
-            $bank->balance = $bank->balance - $amount; 
-        }
-
-        $bank->save();
 
         $transaction->delete();
 

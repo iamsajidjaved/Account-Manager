@@ -11,21 +11,6 @@
             @method('PUT')
             @csrf
             <div class="form-group">
-                <label class="required">{{ trans('cruds.transaction.fields.transaction_type') }}</label>
-                @foreach(App\Models\Transaction::TRANSACTION_TYPE_RADIO as $key => $label)
-                    <div class="form-check {{ $errors->has('transaction_type') ? 'is-invalid' : '' }}">
-                        <input class="form-check-input" type="radio" id="transaction_type_{{ $key }}" name="transaction_type" value="{{ $key }}" {{ old('transaction_type', $transaction->transaction_type) === (string) $key ? 'checked' : '' }} required>
-                        <label class="form-check-label" for="transaction_type_{{ $key }}">{{ $label }}</label>
-                    </div>
-                @endforeach
-                @if($errors->has('transaction_type'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('transaction_type') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.transaction_type_helper') }}</span>
-            </div>
-            <div class="form-group">
                 <label class="required" for="customer_name">{{ trans('cruds.transaction.fields.customer_name') }}</label>
                 <input class="form-control {{ $errors->has('customer_name') ? 'is-invalid' : '' }}" type="text" name="customer_name" id="customer_name" value="{{ old('customer_name', $transaction->customer_name) }}" required>
                 @if($errors->has('customer_name'))
@@ -107,26 +92,6 @@
                     </div>
                 @endif
                 <span class="help-block">{{ trans('cruds.transaction.fields.approver_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="approver_remarks">{{ trans('cruds.transaction.fields.approver_remarks') }}</label>
-                <input class="form-control {{ $errors->has('approver_remarks') ? 'is-invalid' : '' }}" type="text" name="approver_remarks" id="approver_remarks" value="{{ old('approver_remarks', $transaction->approver_remarks) }}">
-                @if($errors->has('approver_remarks'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('approver_remarks') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.approver_remarks_helper') }}</span>
-            </div>
-            <div class="form-group">
-                <label for="approve_datetime">{{ trans('cruds.transaction.fields.approve_datetime') }}</label>
-                <input class="form-control datetime {{ $errors->has('approve_datetime') ? 'is-invalid' : '' }}" type="text" name="approve_datetime" id="approve_datetime" value="{{ old('approve_datetime', $transaction->approve_datetime) }}">
-                @if($errors->has('approve_datetime'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('approve_datetime') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.approve_datetime_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="remarks">{{ trans('cruds.transaction.fields.remarks') }}</label>
