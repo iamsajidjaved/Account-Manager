@@ -153,7 +153,7 @@ return [
             'approver_remarks_helper' => ' ',
             'approve_datetime'        => 'Approve Datetime',
             'approve_datetime_helper' => ' ',
-            'remarks'                 => 'Remarks',
+            'remarks'                 => 'Entry Remarks',
             'remarks_helper'          => ' ',
         ],
     ],
