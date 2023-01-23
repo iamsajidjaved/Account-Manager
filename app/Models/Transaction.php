@@ -38,6 +38,7 @@ class Transaction extends Model
         'transaction_type',
         'customer_name',
         'amount',
+        'beneficiary_bank',
         'bank_id',
         'reference',
         'status',

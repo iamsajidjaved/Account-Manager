@@ -13,6 +13,7 @@ class CreateTransactionsTable extends Migration
             $table->string('transaction_type');
             $table->string('customer_name');
             $table->float('amount', 15, 4);
+            $table->string('beneficiary_bank')->nullable();
             $table->string('reference');
             $table->string('status')->nullable();
             $table->datetime('entry_datetime')->nullable();

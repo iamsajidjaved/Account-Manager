@@ -49,6 +49,14 @@
                     </tr>
                     <tr>
                         <th>
+                            {{ trans('cruds.transaction.fields.beneficiary_bank') }}
+                        </th>
+                        <td>
+                            {{ $transaction->beneficiary_bank }}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th>
                             {{ trans('cruds.transaction.fields.bank') }}
                         </th>
                         <td>
