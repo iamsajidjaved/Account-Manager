@@ -34,13 +34,21 @@ class TransactionController extends Controller
                 $deleteGate = 'transaction_delete';
                 $crudRoutePart = 'transactions';
 
-                return view('partials.datatablesActions', compact(
-                'viewGate',
-                'editGate',
-                'deleteGate',
-                'crudRoutePart',
-                'row'
-            ));
+                if($row->status == "Approved" || $row->status == "Void"){
+                    return view('partials.datatablesReadOnlyActions', compact(
+                        'viewGate',
+                        'crudRoutePart',
+                        'row'
+                    ));
+                }else{
+                    return view('partials.datatablesActions', compact(
+                        'viewGate',
+                        'editGate',
+                        'deleteGate',
+                        'crudRoutePart',
+                        'row'
+                    ));
+                }
             });
 
             $table->editColumn('id', function ($row) {
@@ -81,7 +89,6 @@ class TransactionController extends Controller
 
     public function store(StoreTransactionRequest $request)
     {
-
         $transaction_type = $request->transaction_type;
         $bank_id = $request->bank_id;
         $amount = $request->amount;
@@ -111,11 +118,9 @@ class TransactionController extends Controller
 
         $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-        $approvers = User::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $transaction->load('bank');
 
-        $transaction->load('bank', 'entry_user', 'approver');
-
-        return view('admin.transactions.edit', compact('approvers', 'banks', 'transaction'));
+        return view('admin.transactions.edit', compact('banks', 'transaction'));
     }
 
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
@@ -136,16 +141,15 @@ class TransactionController extends Controller
 
         // do new operation 
         if($status=="Approved" || $status=="Pending"){
-            $transaction_type = $request->transaction_type;
             $bank_id = $request->bank_id;
             $amount = $request->amount;
 
             $bank = Bank::find($bank_id);
-        if($transaction_type=="Withdrawal"){
-            $bank->balance = $bank->balance - $amount;
-        }else if($transaction_type=="Deposit"){
-            $bank->balance = $bank->balance + $amount; 
-        }
+            if($transaction_type=="Withdrawal"){
+                $bank->balance = $bank->balance - $amount;
+            }else if($transaction_type=="Deposit"){
+                $bank->balance = $bank->balance + $amount; 
+            }
             $bank->save();
         }
 
@@ -154,10 +158,10 @@ class TransactionController extends Controller
             $request->request->add(['approve_datetime' => now()]);
         }
 
-            $transaction->update($request->all());
+        $transaction->update($request->all());
 
-            return redirect()->route('admin.transactions.index');
-        }
+        return redirect()->route('admin.transactions.index');
+    }
 
     public function show(Transaction $transaction)
     {
