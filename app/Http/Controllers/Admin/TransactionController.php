@@ -55,11 +55,11 @@ class TransactionController extends Controller
             $table->editColumn('amount', function ($row) {
                 return $row->amount ? $row->amount : '';
             });
+            $table->editColumn('reference', function ($row) {
+                return $row->reference ? $row->reference : '';
+            });
             $table->editColumn('status', function ($row) {
                 return $row->status ? Transaction::STATUS_SELECT[$row->status] : '';
-            });
-            $table->editColumn('remarks', function ($row) {
-                return $row->remarks ? $row->remarks : '';
             });
 
             $table->rawColumns(['actions', 'placeholder']);
@@ -117,7 +117,7 @@ class TransactionController extends Controller
 
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
-        // undo old operation 
+                // undo old operation 
         $transaction_type = $transaction->transaction_type;
         $bank_id = $transaction->bank_id;
         $amount = $transaction->amount;
@@ -170,7 +170,7 @@ class TransactionController extends Controller
     {
         abort_if(Gate::denies('transaction_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $transaction_type = $transaction->transaction_type;
+                $transaction_type = $transaction->transaction_type;
         $amount = $transaction->amount;
         $bank_id = $transaction->bank_id;
         

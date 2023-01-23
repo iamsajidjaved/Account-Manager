@@ -34,10 +34,10 @@
                         {{ trans('cruds.transaction.fields.amount') }}
                     </th>
                     <th>
-                        {{ trans('cruds.transaction.fields.status') }}
+                        {{ trans('cruds.transaction.fields.reference') }}
                     </th>
                     <th>
-                        {{ trans('cruds.transaction.fields.remarks') }}
+                        {{ trans('cruds.transaction.fields.status') }}
                     </th>
                     <th>
                         &nbsp;
@@ -99,8 +99,8 @@
 { data: 'transaction_type', name: 'transaction_type' },
 { data: 'customer_name', name: 'customer_name' },
 { data: 'amount', name: 'amount' },
+{ data: 'reference', name: 'reference' },
 { data: 'status', name: 'status' },
-{ data: 'remarks', name: 'remarks' },
 { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
     orderCellsTop: true,
