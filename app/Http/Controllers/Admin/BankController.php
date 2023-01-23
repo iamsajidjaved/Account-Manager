@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MassDestroyBankRequest;
 use App\Http\Requests\StoreBankRequest;
 use App\Http\Requests\UpdateBankRequest;
 use App\Models\Bank;
@@ -69,21 +68,5 @@ class BankController extends Controller
         $bank->load('country', 'group');
 
         return view('admin.banks.show', compact('bank'));
-    }
-
-    public function destroy(Bank $bank)
-    {
-        abort_if(Gate::denies('bank_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $bank->delete();
-
-        return back();
-    }
-
-    public function massDestroy(MassDestroyBankRequest $request)
-    {
-        Bank::whereIn('id', request('ids'))->delete();
-
-        return response(null, Response::HTTP_NO_CONTENT);
     }
 }

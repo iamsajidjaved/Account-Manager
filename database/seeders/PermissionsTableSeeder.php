@@ -108,54 +108,50 @@ class PermissionsTableSeeder extends Seeder
             ],
             [
                 'id'    => 25,
-                'title' => 'bank_delete',
-            ],
-            [
-                'id'    => 26,
                 'title' => 'bank_access',
             ],
             [
-                'id'    => 27,
+                'id'    => 26,
                 'title' => 'transaction_create',
             ],
             [
-                'id'    => 28,
+                'id'    => 27,
                 'title' => 'transaction_edit',
             ],
             [
-                'id'    => 29,
+                'id'    => 28,
                 'title' => 'transaction_show',
             ],
             [
-                'id'    => 30,
+                'id'    => 29,
                 'title' => 'transaction_delete',
             ],
             [
-                'id'    => 31,
+                'id'    => 30,
                 'title' => 'transaction_access',
             ],
             [
-                'id'    => 32,
+                'id'    => 31,
                 'title' => 'group_create',
             ],
             [
-                'id'    => 33,
+                'id'    => 32,
                 'title' => 'group_edit',
             ],
             [
-                'id'    => 34,
+                'id'    => 33,
                 'title' => 'group_show',
             ],
             [
-                'id'    => 35,
+                'id'    => 34,
                 'title' => 'group_delete',
             ],
             [
-                'id'    => 36,
+                'id'    => 35,
                 'title' => 'group_access',
             ],
             [
-                'id'    => 37,
+                'id'    => 36,
                 'title' => 'profile_password_edit',
             ],
         ];

@@ -30,8 +30,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('countries', 'CountriesController');
 
     // Bank
-    Route::delete('banks/destroy', 'BankController@massDestroy')->name('banks.massDestroy');
-    Route::resource('banks', 'BankController');
+    Route::resource('banks', 'BankController', ['except' => ['destroy']]);
 
     // Transaction
     Route::delete('transactions/destroy', 'TransactionController@massDestroy')->name('transactions.massDestroy');

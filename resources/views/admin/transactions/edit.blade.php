@@ -94,14 +94,14 @@
                 <span class="help-block">{{ trans('cruds.transaction.fields.approver_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="remarks">{{ trans('cruds.transaction.fields.remarks') }}</label>
-                <textarea class="form-control {{ $errors->has('remarks') ? 'is-invalid' : '' }}" name="remarks" id="remarks">{{ old('remarks', $transaction->remarks) }}</textarea>
-                @if($errors->has('remarks'))
+                <label for="approver_remarks">{{ trans('cruds.transaction.fields.approver_remarks') }}</label>
+                <input class="form-control {{ $errors->has('approver_remarks') ? 'is-invalid' : '' }}" type="text" name="approver_remarks" id="approver_remarks" value="{{ old('approver_remarks', $transaction->approver_remarks) }}">
+                @if($errors->has('approver_remarks'))
                     <div class="invalid-feedback">
-                        {{ $errors->first('remarks') }}
+                        {{ $errors->first('approver_remarks') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.remarks_helper') }}</span>
+                <span class="help-block">{{ trans('cruds.transaction.fields.approver_remarks_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
