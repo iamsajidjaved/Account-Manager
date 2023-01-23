@@ -20,6 +20,7 @@ class CreateTransactionsTable extends Migration
             $table->string('approver_remarks')->nullable();
             $table->datetime('approve_datetime')->nullable();
             $table->longText('remarks')->nullable();
+            $table->string('beneficiary_bank')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

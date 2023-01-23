@@ -46,8 +46,9 @@ class UpdateTransactionRequest extends FormRequest
                 'max:255',
                 'nullable',
             ],
-            'approve_datetime' => [
-                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+            'beneficiary_bank' => [
+                'string',
+                'max:255',
                 'nullable',
             ],
         ];

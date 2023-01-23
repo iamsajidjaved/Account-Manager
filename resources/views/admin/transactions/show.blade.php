@@ -127,6 +127,14 @@
                             {{ $transaction->remarks }}
                         </td>
                     </tr>
+                    <tr>
+                        <th>
+                            {{ trans('cruds.transaction.fields.beneficiary_bank') }}
+                        </th>
+                        <td>
+                            {{ $transaction->beneficiary_bank }}
+                        </td>
+                    </tr>
                 </tbody>
             </table>
             <div class="form-group">

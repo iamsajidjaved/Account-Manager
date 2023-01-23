@@ -79,6 +79,16 @@
                 <span class="help-block">{{ trans('cruds.transaction.fields.remarks_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="beneficiary_bank">{{ trans('cruds.transaction.fields.beneficiary_bank') }}</label>
+                <input class="form-control {{ $errors->has('beneficiary_bank') ? 'is-invalid' : '' }}" type="text" name="beneficiary_bank" id="beneficiary_bank" value="{{ old('beneficiary_bank', '') }}">
+                @if($errors->has('beneficiary_bank'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('beneficiary_bank') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.transaction.fields.beneficiary_bank_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>
