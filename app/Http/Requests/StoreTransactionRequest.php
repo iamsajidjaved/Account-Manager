@@ -24,7 +24,6 @@ class StoreTransactionRequest extends FormRequest
                 'string',
                 'max:255',
                 'required',
-                'unique:transactions',
             ],
             'amount' => [
                 'numeric',

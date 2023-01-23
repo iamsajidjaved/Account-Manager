@@ -24,7 +24,6 @@ class UpdateTransactionRequest extends FormRequest
                 'string',
                 'max:255',
                 'required',
-                'unique:transactions,customer_name,' . request()->route('transaction')->id,
             ],
             'amount' => [
                 'numeric',
