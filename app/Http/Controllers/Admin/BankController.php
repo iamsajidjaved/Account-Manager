@@ -86,4 +86,16 @@ class BankController extends Controller
 
         return response(null, Response::HTTP_NO_CONTENT);
     }
+
+    public static function validTransaction($bank_id, $amount){
+
+        $bank = Bank::find($bank_id);
+        $balance = $bank->balance;
+        
+        if(($balance-$amount) < 0){
+           return true;
+        }else{
+           return false;
+        }
+    }
 }

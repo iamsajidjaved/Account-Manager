@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Controllers\Admin\BankController;
 use App\Http\Requests\MassDestroyTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
@@ -15,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Session;
 
 class TransactionController extends Controller
 {
@@ -90,11 +92,19 @@ class TransactionController extends Controller
 
     public function store(StoreTransactionRequest $request)
     {
-        DB::transaction(function () use ($request){
+        return DB::transaction(function () use ($request){
 
             $transaction_type = $request->transaction_type;
             $bank_id = $request->bank_id;
             $amount = $request->amount;
+
+            if($transaction_type=="Withdrawal"){
+                if(BankController::validTransaction($bank_id, $amount)){
+
+                    Session::flash('message', 'Bank balance must not be less than zero. ');
+                    return view('admin.transactions.index');
+                }
+            }
 
             $bank = Bank::find($bank_id);
             if($transaction_type=="Withdrawal"){
@@ -104,17 +114,17 @@ class TransactionController extends Controller
                 $request->request->add(['status' => 'Pending']);
                 $bank->balance = $bank->balance + $amount; 
             }
-    
             $bank->save();
     
             $request->request->add(['entry_user_id' => Auth::id()]);
             $request->request->add(['entry_datetime' => now()]);
     
             $transaction = Transaction::create($request->all());
-
-            return redirect()->route('admin.transactions.index');
             
+            return redirect()->route('admin.transactions.index'); 
         });
+
+        
     }
 
     public function edit(Transaction $transaction)
@@ -131,31 +141,42 @@ class TransactionController extends Controller
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
         DB::transaction(function () use ($request, $transaction) {
-
-             // undo old operation 
+              
             $transaction_type = $transaction->transaction_type;
-            $bank_id = $transaction->bank_id;
-            $amount = $transaction->amount;
+            $transaction_bank_id = $transaction->bank_id;
+            $transaction_amount = $transaction->amount;
+
+            $request_bank_id = $request->bank_id;
+            $request_amount = $request->amount;
             $status = $request->status;
 
-            $bank = Bank::find($bank_id);
+            
+            $bank = Bank::find($transaction_bank_id);
+
+            // make sure the bank balance is not less than zero
+            if((BankController::validTransaction($request_bank_id, $transaction_amount) && ($request_amount-$bank->balance)<0)){
+                $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+                $transaction->load('bank');
+
+                Session::flash('message', 'Bank balance must not be less than zero. ');
+                return view('admin.transactions.edit', compact('banks', 'transaction'));
+            }
+
+            // undo old operation
             if($transaction_type=="Withdrawal"){
-                $bank->balance = $bank->balance + $amount;
+                $bank->balance = $bank->balance + $transaction_amount;
             }else if($transaction_type=="Deposit"){
-                $bank->balance = $bank->balance - $amount; 
+                $bank->balance = $bank->balance - $transaction_amount; 
             }
             $bank->save();
 
             // do new operation 
             if($status=="Approved" || $status=="Pending"){
-                $bank_id = $request->bank_id;
-                $amount = $request->amount;
-
-                $bank = Bank::find($bank_id);
+                $bank = Bank::find($request_bank_id);
                 if($transaction_type=="Withdrawal"){
-                    $bank->balance = $bank->balance - $amount;
+                    $bank->balance = $bank->balance - $request_amount;
                 }else if($transaction_type=="Deposit"){
-                    $bank->balance = $bank->balance + $amount; 
+                    $bank->balance = $bank->balance + $request_amount; 
                 }
                 $bank->save();
             }
@@ -165,11 +186,11 @@ class TransactionController extends Controller
                 $request->request->add(['approve_datetime' => now()]);
             }
 
-            $transaction->update($request->all());
-
-            return redirect()->route('admin.transactions.index');
+            $transaction->update($request->all());   
 
         });
+
+        return redirect()->route('admin.transactions.index');
     }
 
     public function show(Transaction $transaction)
@@ -190,6 +211,13 @@ class TransactionController extends Controller
             $transaction_type = $transaction->transaction_type;
             $amount = $transaction->amount;
             $bank_id = $transaction->bank_id;
+
+            if($transaction_type=="Deposit"){
+                if(BankController::validTransaction($bank_id, $amount)){
+                    Session::flash('message', 'Bank balance must not be less than zero. ');
+                    return back();
+                }
+            }
             
             $bank = Bank::find($bank_id);
             if($transaction_type=="Withdrawal"){
@@ -199,11 +227,11 @@ class TransactionController extends Controller
             }
 
             $bank->save();
-            $transaction->delete();
-
-            return back();
+            $transaction->delete();        
 
         });
+
+        return back();
 
     }
 
@@ -216,10 +244,16 @@ class TransactionController extends Controller
                 $transaction_type = $transaction->transaction_type;
                 $amount = $transaction->amount;
                 $bank_id = $transaction->bank_id;
+
+                if($transaction_type=="Deposit"){
+                    if(BankController::validTransaction($bank_id, $amount)){
+                        Session::flash('message', 'Bank balance must not be less than zero. ');
+                        return back();
+                    }
+                }
     
                 $bank = Bank::find($bank_id);
-                $bank = Bank::find($bank_id);
-    
+
                 if($transaction_type=="Withdrawal"){
                     $bank->balance = $bank->balance + $amount;
                 }else if($transaction_type=="Deposit"){
@@ -229,9 +263,8 @@ class TransactionController extends Controller
                 $bank->save();
                 $transaction->delete();
             }
-
-            return response(null, Response::HTTP_NO_CONTENT);
-
         });  
+
+        return response(null, Response::HTTP_NO_CONTENT);
     }
 }
