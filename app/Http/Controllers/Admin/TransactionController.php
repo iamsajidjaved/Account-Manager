@@ -27,10 +27,14 @@ class TransactionController extends Controller
 
             $user = Auth::user();
             $roles = $user->roles()->pluck('title')->toArray();
-            $group = $user->group;
-            $banks = $group->banks->pluck('id')->toArray();
 
             if(in_array('Entry Person', $roles)){
+                $group = $user->group;
+                $banks = $group->banks->pluck('id')->toArray();
+                $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->select(sprintf('%s.*', (new Transaction())->table));
+            } else if(in_array('Approver', $roles)){
+                $country = $user->country;
+                $banks = $user->country->countryBanks->pluck('id')->toArray();
                 $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->select(sprintf('%s.*', (new Transaction())->table));
             }else{
                 $query = Transaction::with(['bank', 'entry_user', 'approver'])->select(sprintf('%s.*', (new Transaction())->table));
@@ -151,23 +155,31 @@ class TransactionController extends Controller
 
         $user = Auth::user();
         $roles = $user->roles()->pluck('title')->toArray();
-         
-        $group = $user->group;
-        $banks = $group->banks->pluck('id')->toArray();
-
-        if(in_array($transaction->bank_id, $banks)){
+        
             if(in_array('Entry Person', $roles)){
-                $banks = Bank::where('group_id', $user->group_id)->pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-            }else{
+                $group = $user->group;
+                $banks = $group->banks->pluck('id')->toArray();
+                if(in_array($transaction->bank_id, $banks)){
+                    $banks = Bank::whereIn('id', $banks)->pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+                }else{
+                    Session::flash('message', 'You are not allowed to edit this transaction. ');
+                    return view('admin.transactions.index');
+                }
+            }else if(in_array('Approver', $roles)){
+                $country = $user->country;
+                $banks = $user->country->countryBanks->pluck('id')->toArray();
+                if(in_array($transaction->bank_id, $banks)){
+                $banks = Bank::whereIn('id', $banks)->pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+                }else{
+                    Session::flash('message', 'You are not allowed to edit this transaction. ');
+                    return view('admin.transactions.index');
+                }
+            } else{
                 $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
             }
     
             $transaction->load('bank');
             return view('admin.transactions.edit', compact('banks', 'transaction'));
-        }else{
-            Session::flash('message', 'You are not allowed to edit this transaction. ');
-            return view('admin.transactions.index');
-        }
     }
 
     public function update(UpdateTransactionRequest $request, Transaction $transaction)

@@ -23,11 +23,6 @@ class UpdateBankRequest extends FormRequest
                 'required',
                 'unique:banks,bank_name,' . request()->route('bank')->id,
             ],
-            'balance' => [
-                'numeric',
-                'required',
-                'min:0',
-            ],
             'country_id' => [
                 'required',
                 'integer',
