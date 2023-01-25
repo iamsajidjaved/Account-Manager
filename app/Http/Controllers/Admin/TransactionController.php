@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\Admin\BankController;
-use App\Http\Requests\MassDestroyTransactionRequest;
 use App\Http\Requests\StoreTransactionRequest;
 use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\Bank;
@@ -25,7 +24,18 @@ class TransactionController extends Controller
         abort_if(Gate::denies('transaction_access'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         if ($request->ajax()) {
-            $query = Transaction::with(['bank', 'entry_user', 'approver'])->select(sprintf('%s.*', (new Transaction())->table));
+
+            $user = Auth::user();
+            $roles = $user->roles()->pluck('title')->toArray();
+            $group = $user->group;
+            $banks = $group->banks->pluck('id')->toArray();
+
+            if(in_array('Entry Person', $roles)){
+                $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->select(sprintf('%s.*', (new Transaction())->table));
+            }else{
+                $query = Transaction::with(['bank', 'entry_user', 'approver'])->select(sprintf('%s.*', (new Transaction())->table));
+            }
+            
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -85,7 +95,15 @@ class TransactionController extends Controller
     {
         abort_if(Gate::denies('transaction_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $user = Auth::user();
+        $roles = $user->roles()->pluck('title')->toArray();
+
+
+        if(in_array('Entry Person', $roles)){
+            $banks = Bank::where('group_id', $user->group_id)->pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        }else{
+            $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        }
 
         return view('admin.transactions.create', compact('banks'));
     }
@@ -131,11 +149,25 @@ class TransactionController extends Controller
     {
         abort_if(Gate::denies('transaction_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+        $user = Auth::user();
+        $roles = $user->roles()->pluck('title')->toArray();
+         
+        $group = $user->group;
+        $banks = $group->banks->pluck('id')->toArray();
 
-        $transaction->load('bank');
-
-        return view('admin.transactions.edit', compact('banks', 'transaction'));
+        if(in_array($transaction->bank_id, $banks)){
+            if(in_array('Entry Person', $roles)){
+                $banks = Bank::where('group_id', $user->group_id)->pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+            }else{
+                $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+            }
+    
+            $transaction->load('bank');
+            return view('admin.transactions.edit', compact('banks', 'transaction'));
+        }else{
+            Session::flash('message', 'You are not allowed to edit this transaction. ');
+            return view('admin.transactions.index');
+        }
     }
 
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
@@ -206,41 +238,16 @@ class TransactionController extends Controller
     {
         abort_if(Gate::denies('transaction_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        DB::transaction(function () use ($transaction){
+        $user = Auth::user();
+        $roles = $user->roles()->pluck('title')->toArray();
+         
+        $group = $user->group;
+        $banks = $group->banks->pluck('id')->toArray();
 
-            $transaction_type = $transaction->transaction_type;
-            $amount = $transaction->amount;
-            $bank_id = $transaction->bank_id;
+        if(in_array($transaction->bank_id, $banks)){
 
-            if($transaction_type=="Deposit"){
-                if(BankController::validTransaction($bank_id, $amount)){
-                    Session::flash('message', 'Bank balance must not be less than zero. ');
-                    return back();
-                }
-            }
-            
-            $bank = Bank::find($bank_id);
-            if($transaction_type=="Withdrawal"){
-                $bank->balance = $bank->balance + $amount;
-            }else if($transaction_type=="Deposit"){
-                $bank->balance = $bank->balance - $amount; 
-            }
+            DB::transaction(function () use ($transaction){
 
-            $bank->save();
-            $transaction->delete();        
-
-        });
-
-        return back();
-
-    }
-
-    public function massDestroy(MassDestroyTransactionRequest $request)
-    {
-        DB::transaction(function () use ($request){
-            
-            foreach(request('ids') as $id){
-                $transaction = Transaction::find($id);
                 $transaction_type = $transaction->transaction_type;
                 $amount = $transaction->amount;
                 $bank_id = $transaction->bank_id;
@@ -251,20 +258,24 @@ class TransactionController extends Controller
                         return back();
                     }
                 }
-    
+                
                 $bank = Bank::find($bank_id);
-
                 if($transaction_type=="Withdrawal"){
                     $bank->balance = $bank->balance + $amount;
                 }else if($transaction_type=="Deposit"){
                     $bank->balance = $bank->balance - $amount; 
                 }
-    
-                $bank->save();
-                $transaction->delete();
-            }
-        });  
 
-        return response(null, Response::HTTP_NO_CONTENT);
+                $bank->save();
+                $transaction->delete();        
+
+            });
+        }else{
+            Session::flash('message', 'You are not allowed to delete this transaction. ');
+            return view('admin.transactions.index');
+        }
+
+        return back();
+
     }
 }

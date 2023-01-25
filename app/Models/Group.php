@@ -27,6 +27,11 @@ class Group extends Model
         'deleted_at',
     ];
 
+    public function banks()
+    {
+        return $this->hasMany(Bank::class);
+    }
+
     protected function serializeDate(DateTimeInterface $date)
     {
         return $date->format('Y-m-d H:i:s');

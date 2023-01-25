@@ -6,9 +6,9 @@ use App\Models\Role;
 use Illuminate\Database\Seeder;
 
 class RolesTableSeeder extends Seeder
-{
+ {
     public function run()
-    {
+ {
         $roles = [
             [
                 'id'    => 1,
@@ -16,10 +16,14 @@ class RolesTableSeeder extends Seeder
             ],
             [
                 'id'    => 2,
-                'title' => 'User',
+                'title' => 'Entry Person',
+            ],
+            [
+                'id'    => 3,
+                'title' => 'Approver',
             ],
         ];
 
-        Role::insert($roles);
+        Role::insert( $roles );
     }
 }
