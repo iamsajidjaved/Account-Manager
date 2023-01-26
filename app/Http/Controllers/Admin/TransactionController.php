@@ -123,7 +123,7 @@ class TransactionController extends Controller
             if($transaction_type=="Withdrawal"){
                 if(BankController::validTransaction($bank_id, $amount)){
 
-                    Session::flash('message', 'Bank balance must not be less than zero. ');
+                    Session::flash('message', 'The selected bank balance is low for this transaction ');
                     return view('admin.transactions.index');
                 }
             }
@@ -202,7 +202,7 @@ class TransactionController extends Controller
                 $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
                 $transaction->load('bank');
 
-                Session::flash('message', 'Bank balance must not be less than zero. ');
+                Session::flash('message', 'The selected bank balance is low for this transaction ');
                 return view('admin.transactions.edit', compact('banks', 'transaction'));
             }
 
@@ -266,7 +266,7 @@ class TransactionController extends Controller
 
                 if($transaction_type=="Deposit"){
                     if(BankController::validTransaction($bank_id, $amount)){
-                        Session::flash('message', 'Bank balance must not be less than zero. ');
+                        Session::flash('message', 'The selected bank balance is low for this transaction ');
                         return back();
                     }
                 }
