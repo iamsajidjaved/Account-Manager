@@ -2,6 +2,8 @@
 
 @section('content')
 <div class="content">
+<div class="card">
+<div class="card-body">
     <div class="row">
         <p class="col-lg-12">
             @yield('title')
@@ -44,5 +46,7 @@
             @yield('messenger-content')
         </div>
     </div>
+</div>
+</div>
 </div>
 @stop
