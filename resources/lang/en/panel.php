@@ -1,5 +1,5 @@
 <?php
 
 return [
-    'site_title' => 'Account Manager',
+    'site_title' => 'Account Managers',
 ];
