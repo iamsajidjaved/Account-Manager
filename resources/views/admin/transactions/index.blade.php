@@ -18,9 +18,6 @@
         <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Transaction">
             <thead>
                 <tr>
-                    <th width="10">
-
-                    </th>
                     <th>
                         {{ trans('cruds.transaction.fields.id') }}
                     </th>
@@ -60,7 +57,6 @@ $(function () {
     aaSorting: [],
     ajax: "{{ route('admin.transactions.index') }}",
     columns: [
-        { data: 'placeholder', name: 'placeholder' },
         { data: 'id', name: 'id' },
         { data: 'transaction_type', name: 'transaction_type' },
         { data: 'customer_name', name: 'customer_name' },

@@ -18,9 +18,6 @@
         <table class=" table table-bordered table-striped table-hover ajaxTable datatable datatable-Group">
             <thead>
                 <tr>
-                    <th width="10">
-
-                    </th>
                     <th>
                         {{ trans('cruds.group.fields.id') }}
                     </th>
@@ -52,7 +49,6 @@
     aaSorting: [],
     ajax: "{{ route('admin.groups.index') }}",
     columns: [
-      { data: 'placeholder', name: 'placeholder' },
       { data: 'id', name: 'id' },
       { data: 'group_name', name: 'group_name' },
       { data: 'actions', name: '{{ trans('global.actions') }}' }

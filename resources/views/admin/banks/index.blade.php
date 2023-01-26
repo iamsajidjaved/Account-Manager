@@ -19,12 +19,6 @@
             <table class=" table table-bordered table-striped table-hover datatable datatable-Bank">
                 <thead>
                     <tr>
-                        <th width="10">
-
-                        </th>
-                        <th>
-                            {{ trans('cruds.bank.fields.id') }}
-                        </th>
                         <th>
                             {{ trans('cruds.bank.fields.bank_name') }}
                         </th>
@@ -45,12 +39,6 @@
                 <tbody>
                     @foreach($banks as $key => $bank)
                         <tr data-entry-id="{{ $bank->id }}">
-                            <td>
-
-                            </td>
-                            <td>
-                                {{ $bank->id ?? '' }}
-                            </td>
                             <td>
                                 {{ $bank->bank_name ?? '' }}
                             </td>
