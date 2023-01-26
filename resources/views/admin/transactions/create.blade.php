@@ -44,16 +44,6 @@
                 @endif
                 <span class="help-block">{{ trans('cruds.transaction.fields.amount_helper') }}</span>
             </div>
-            <div class="form-group beneficiary-bank" style="display: none;">
-                <label for="beneficiary_bank">{{ trans('cruds.transaction.fields.beneficiary_bank') }}</label>
-                <input class="form-control {{ $errors->has('beneficiary_bank') ? 'is-invalid' : '' }}" type="text" name="beneficiary_bank" id="beneficiary_bank" value="{{ old('beneficiary_bank', '') }}">
-                @if($errors->has('beneficiary_bank'))
-                    <div class="invalid-feedback">
-                        {{ $errors->first('beneficiary_bank') }}
-                    </div>
-                @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.beneficiary_bank_helper') }}</span>
-            </div>
             <div class="form-group">
                 <label class="required" for="bank_id">{{ trans('cruds.transaction.fields.bank') }}</label>
                 <select class="form-control select2 {{ $errors->has('bank') ? 'is-invalid' : '' }}" name="bank_id" id="bank_id" required>
@@ -89,6 +79,16 @@
                 <span class="help-block">{{ trans('cruds.transaction.fields.remarks_helper') }}</span>
             </div>
             <div class="form-group">
+                <label for="beneficiary_bank">{{ trans('cruds.transaction.fields.beneficiary_bank') }}</label>
+                <input class="form-control {{ $errors->has('beneficiary_bank') ? 'is-invalid' : '' }}" type="text" name="beneficiary_bank" id="beneficiary_bank" value="{{ old('beneficiary_bank', '') }}">
+                @if($errors->has('beneficiary_bank'))
+                    <div class="invalid-feedback">
+                        {{ $errors->first('beneficiary_bank') }}
+                    </div>
+                @endif
+                <span class="help-block">{{ trans('cruds.transaction.fields.beneficiary_bank_helper') }}</span>
+            </div>
+            <div class="form-group">
                 <button class="btn btn-danger" type="submit">
                     {{ trans('global.save') }}
                 </button>
@@ -96,21 +96,7 @@
         </form>
     </div>
 </div>
-@endsection
 
-@section('scripts')
-@parent
-<script>
-        $(document).ready(function() {
-        $("input[name='transaction_type']").click(function() {
-            const transaction_type = $(this).val();
 
-            if(transaction_type=="Deposit"){
-                $("div.beneficiary-bank").hide();
-            }else if(transaction_type=="Withdrawal"){
-                $("div.beneficiary-bank").show();
-            }
-        });
-    });
-</script>
+
 @endsection

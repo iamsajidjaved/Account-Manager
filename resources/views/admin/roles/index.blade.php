@@ -1,5 +1,6 @@
 @extends('layouts.admin')
 @section('content')
+
 <div class="card">
     <div class="card-header">
         {{ trans('cruds.role.title_singular') }} {{ trans('global.list') }}
@@ -46,6 +47,8 @@
                             </td>
                             <td>
 
+
+
                             </td>
 
                         </tr>
@@ -64,7 +67,7 @@
 <script>
     $(function () {
   let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
-
+  
   $.extend(true, $.fn.dataTable.defaults, {
     orderCellsTop: true,
     order: [[ 1, 'desc' ]],
