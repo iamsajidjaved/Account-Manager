@@ -1,13 +1,17 @@
 @extends('layouts.admin')
-@section('content')
 
+@section('styles')
+<link href="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jquery-editable/css/jquery-editable.css" rel="stylesheet"/>
+@endsection
+
+@section('content')
 <div class="container-fluid card">
     <div class="card-header">
         {{ trans('global.create') }} {{ trans('cruds.transaction.title_singular') }}
     </div>
 
     <div class="card-body">
-        <form class="form-row" method="POST" action="{{ route("entryperson.transactions.store") }}" enctype="multipart/form-data">
+        <form class="form-row" method="POST" action="{{ route("entryperson.transactions.deposit.store") }}" enctype="multipart/form-data">
             @csrf
             <input type="hidden" name="bank_id" id="bank_id" value="{{$bank_id}}" required>
             <div class="form-group col-md-3">
@@ -55,7 +59,7 @@
     </div>
     <div class="card-body">
         <div class="row">
-            <table class="table table-bordered table-striped">
+            <table class="table table-bordered data-table">
                 <thead>
                     <tr>
                         <th>Name</th>
@@ -66,9 +70,21 @@
                     <tbody>
                         @foreach($transactions as $transaction)
                             <tr>
-                                <td>{{ $transaction->customer_name }}</td>
-                                <td>{{ $transaction->amount }}</td>
-                                <td>{{ $transaction->reference }}</td>
+                                <td>
+                                    <a href="" class="update" data-name="customer_name" data-type="text" data-pk="{{ $transaction->id }}" data-title="Name" required>
+                                        {{ $transaction->customer_name }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="" class="update" data-name="amount" data-type="number" data-pk="{{ $transaction->id }}" data-title="amount" required>
+                                        {{ $transaction->amount }}
+                                    </a>
+                                </td>
+                                <td>
+                                    <a href="" class="update" data-name="reference" data-type="text" data-pk="{{ $transaction->id }}" data-title="reference" required>
+                                        {{ $transaction->reference }}
+                                    </a>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
@@ -81,17 +97,25 @@
 
 @section('scripts')
 @parent
-<script>
-        $(document).ready(function() {
-        $("input[name='transaction_type']").click(function() {
-            const transaction_type = $(this).val();
+<script>$.fn.poshytip={defaults:null}</script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/x-editable/1.5.0/jquery-editable/js/jquery-editable-poshytip.min.js"></script>
 
-            if(transaction_type=="Deposit"){
-                $("div.beneficiary-bank").hide();
-            }else if(transaction_type=="Withdrawal"){
-                $("div.beneficiary-bank").show();
+<script type="text/javascript">
+    $.fn.editable.defaults.mode = 'inline';
+
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': '{{csrf_token()}}'
+        }
+    });
+
+    $('.update').editable({
+        url: "{{ route('entryperson.transactions.deposit.update') }}",
+        validate: function(value) {
+        if($.trim(value) == '') {
+                return 'Enter a value';
             }
-        });
+        }
     });
 </script>
 @endsection

@@ -34,6 +34,9 @@
                         <th>
                             &nbsp;
                         </th>
+                        <th>
+                            &nbsp;
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -51,7 +54,17 @@
                             <td>
                                 {{ $bank->group->group_name ?? '' }}
                             </td>
-                            <td>
+                            <td class="text-center">
+                                @can('transaction_create')
+                                    <a class="btn btn-xs btn-primary" href="{{ route('entryperson.transactions.deposit.create', $bank->id) }}">
+                                        Deposit
+                                    </a>
+                                    <a class="btn btn-xs btn-primary" href="{{ route('entryperson.transactions.withdrawal.create', $bank->id) }}">
+                                        Withdrawal
+                                    </a>
+                                @endcan
+                            </td>
+                            <td class="text-center">
                                 @can('bank_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.banks.show', $bank->id) }}">
                                         {{ trans('global.view') }}

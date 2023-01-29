@@ -39,7 +39,7 @@ class TransactionController extends Controller
             }else{
                 $query = Transaction::with(['bank', 'entry_user', 'approver'])->select(sprintf('%s.*', (new Transaction())->table));
             }
-            
+
             $table = Datatables::of($query);
 
             $table->addColumn('placeholder', '&nbsp;');
@@ -95,7 +95,7 @@ class TransactionController extends Controller
         return view('admin.transactions.index');
     }
 
-    public function create()
+    public function create(Request $request, $bank_id)
     {
         abort_if(Gate::denies('transaction_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
@@ -104,7 +104,11 @@ class TransactionController extends Controller
 
 
         if(in_array('Entry Person', $roles)){
-            $banks = Bank::where('group_id', $user->group_id)->pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+            // $banks = Bank::where('group_id', $user->group_id)->pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
+            $group = $user->group;
+            $banks = $group->banks->pluck('id')->toArray();
+            $transactions = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->get();
+            return view('admin.transactions.create', compact('transactions'));
         }else{
             $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
         }
@@ -134,19 +138,19 @@ class TransactionController extends Controller
                 $bank->balance = $bank->balance - $amount;
             }else if($transaction_type=="Deposit"){
                 $request->request->add(['status' => 'Pending']);
-                $bank->balance = $bank->balance + $amount; 
+                $bank->balance = $bank->balance + $amount;
             }
             $bank->save();
-    
+
             $request->request->add(['entry_user_id' => Auth::id()]);
             $request->request->add(['entry_datetime' => now()]);
-    
+
             $transaction = Transaction::create($request->all());
-            
-            return redirect()->route('admin.transactions.index'); 
+
+            return redirect()->route('admin.transactions.index');
         });
 
-        
+
     }
 
     public function edit(Transaction $transaction)
@@ -155,7 +159,7 @@ class TransactionController extends Controller
 
         $user = Auth::user();
         $roles = $user->roles()->pluck('title')->toArray();
-        
+
             if(in_array('Entry Person', $roles)){
                 $group = $user->group;
                 $banks = $group->banks->pluck('id')->toArray();
@@ -177,7 +181,7 @@ class TransactionController extends Controller
             } else{
                 $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
             }
-    
+
             $transaction->load('bank');
             return view('admin.transactions.edit', compact('banks', 'transaction'));
     }
@@ -185,7 +189,7 @@ class TransactionController extends Controller
     public function update(UpdateTransactionRequest $request, Transaction $transaction)
     {
         DB::transaction(function () use ($request, $transaction) {
-              
+
             $transaction_type = $transaction->transaction_type;
             $transaction_bank_id = $transaction->bank_id;
             $transaction_amount = $transaction->amount;
@@ -194,7 +198,7 @@ class TransactionController extends Controller
             $request_amount = $request->amount;
             $status = $request->status;
 
-            
+
             $bank = Bank::find($transaction_bank_id);
 
             // make sure the bank balance is not less than zero
@@ -210,17 +214,17 @@ class TransactionController extends Controller
             if($transaction_type=="Withdrawal"){
                 $bank->balance = $bank->balance + $transaction_amount;
             }else if($transaction_type=="Deposit"){
-                $bank->balance = $bank->balance - $transaction_amount; 
+                $bank->balance = $bank->balance - $transaction_amount;
             }
             $bank->save();
 
-            // do new operation 
+            // do new operation
             if($status=="Approved" || $status=="Pending"){
                 $bank = Bank::find($request_bank_id);
                 if($transaction_type=="Withdrawal"){
                     $bank->balance = $bank->balance - $request_amount;
                 }else if($transaction_type=="Deposit"){
-                    $bank->balance = $bank->balance + $request_amount; 
+                    $bank->balance = $bank->balance + $request_amount;
                 }
                 $bank->save();
             }
@@ -230,7 +234,7 @@ class TransactionController extends Controller
                 $request->request->add(['approve_datetime' => now()]);
             }
 
-            $transaction->update($request->all());   
+            $transaction->update($request->all());
 
         });
 
@@ -252,7 +256,7 @@ class TransactionController extends Controller
 
         $user = Auth::user();
         $roles = $user->roles()->pluck('title')->toArray();
-         
+
         $group = $user->group;
         $banks = $group->banks->pluck('id')->toArray();
 
@@ -270,16 +274,16 @@ class TransactionController extends Controller
                         return back();
                     }
                 }
-                
+
                 $bank = Bank::find($bank_id);
                 if($transaction_type=="Withdrawal"){
                     $bank->balance = $bank->balance + $amount;
                 }else if($transaction_type=="Deposit"){
-                    $bank->balance = $bank->balance - $amount; 
+                    $bank->balance = $bank->balance - $amount;
                 }
 
                 $bank->save();
-                $transaction->delete();        
+                $transaction->delete();
 
             });
         }else{

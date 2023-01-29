@@ -1,4 +1,6 @@
 <?php
+use App\Http\Controllers\EntryPerson\DepositTransactionController;
+use App\Http\Controllers\EntryPerson\WithdrawalTransactionController;
 
 Route::redirect('/', '/login');
 Route::get('/home', function () {
@@ -14,30 +16,25 @@ Auth::routes(['register' => false]);
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', '2fa']], function () {
     Route::get('/', 'HomeController@index')->name('home');
     // Permissions
-    Route::delete('permissions/destroy', 'PermissionsController@massDestroy')->name('permissions.massDestroy');
     Route::resource('permissions', 'PermissionsController');
 
     // Roles
     Route::resource('roles', 'RolesController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
 
     // Users
-    Route::delete('users/destroy', 'UsersController@massDestroy')->name('users.massDestroy');
     Route::resource('users', 'UsersController');
 
     // Countries
-    Route::delete('countries/destroy', 'CountriesController@massDestroy')->name('countries.massDestroy');
     Route::resource('countries', 'CountriesController');
 
     // Bank
-    Route::delete('banks/destroy', 'BankController@massDestroy')->name('banks.massDestroy');
     Route::resource('banks', 'BankController');
 
     // Transaction
-    Route::delete('transactions/destroy', 'TransactionController@massDestroy')->name('transactions.massDestroy');
-    Route::resource('transactions', 'TransactionController');
+    Route::get('transactions/create/{bank_id}', 'TransactionController@create')->name('transactions.create');
+    Route::resource('transactions', 'TransactionController',['except' => ['create']]);
 
     // Group
-    Route::delete('groups/destroy', 'GroupController@massDestroy')->name('groups.massDestroy');
     Route::resource('groups', 'GroupController');
 
     Route::get('messenger', 'MessengerController@index')->name('messenger.index');
@@ -50,6 +47,18 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::post('messenger/{topic}/reply', 'MessengerController@replyToTopic')->name('messenger.reply');
     Route::get('messenger/{topic}/reply', 'MessengerController@showReply')->name('messenger.showReply');
 });
+
+Route::group(['prefix' => 'entry-person', 'as' => 'entryperson.', 'namespace' => 'EntryPerson', 'middleware' => ['auth', '2fa']], function () {
+    // Transaction
+    Route::get('transactions/deposit/create/{bank_id}', [DepositTransactionController::class, 'create'])->name('transactions.deposit.create');
+    Route::post('transactions/deposit/update', [DepositTransactionController::class, 'update'])->name('transactions.deposit.update');
+    Route::post('transactions/deposit/store', [DepositTransactionController::class, 'store'])->name('transactions.deposit.store');
+
+    Route::get('transactions/withdrawal/create/{bank_id}', 'WithdrawalTransactionController@create')->name('transactions.withdrawal.create');
+    Route::post('transactions/withdrawal/update', [WithdrawalTransactionController::class, 'update'])->name('transactions.withdrawal.update');
+    Route::post('transactions/withdrawal/store', [WithdrawalTransactionController::class, 'store'])->name('transactions.withdrawal.store');
+});
+
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth', '2fa']], function () {
     // Change password
     if (file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php'))) {

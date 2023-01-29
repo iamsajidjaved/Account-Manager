@@ -42,7 +42,8 @@ class PermissionRoleTableSeeder extends Seeder {
             28,
             29,
             30,
-            31
+            31,
+            26
         ];
 
         $user_permissions = Permission::whereIn( 'id', $entry_person_permissions_arr );
