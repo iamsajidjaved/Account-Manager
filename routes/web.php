@@ -39,7 +39,7 @@ Route::group(['prefix' => 'entry-person', 'as' => 'entryperson.', 'namespace' =>
     Route::post('transactions/deposit/update', [DepositTransactionController::class, 'update'])->name('transactions.deposit.update');
     Route::post('transactions/deposit/store', [DepositTransactionController::class, 'store'])->name('transactions.deposit.store');
 
-    Route::get('transactions/withdrawal/create/{bank_id}', 'WithdrawalTransactionController@create')->name('transactions.withdrawal.create');
+    Route::get('transactions/withdrawal/create/{bank_id?}', 'WithdrawalTransactionController@create')->name('transactions.withdrawal.create');
     Route::post('transactions/withdrawal/update', [WithdrawalTransactionController::class, 'update'])->name('transactions.withdrawal.update');
     Route::post('transactions/withdrawal/store', [WithdrawalTransactionController::class, 'store'])->name('transactions.withdrawal.store');
 });

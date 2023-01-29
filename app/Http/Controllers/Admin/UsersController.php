@@ -30,9 +30,7 @@ class UsersController extends Controller
         abort_if(Gate::denies('user_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $roles = Role::pluck('title', 'id');
-
         $groups = Group::pluck('group_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
         $countries = Country::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
         return view('admin.users.create', compact('countries', 'groups', 'roles'));
@@ -51,13 +49,9 @@ class UsersController extends Controller
         abort_if(Gate::denies('user_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $roles = Role::pluck('title', 'id');
-
         $groups = Group::pluck('group_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
         $countries = Country::pluck('name', 'id')->prepend(trans('global.pleaseSelect'), '');
-
         $user->load('roles', 'group', 'country');
-
         return view('admin.users.edit', compact('countries', 'groups', 'roles', 'user'));
     }
 
@@ -65,7 +59,6 @@ class UsersController extends Controller
     {
         $user->update($request->all());
         $user->roles()->sync($request->input('roles', []));
-
         return redirect()->route('admin.users.index');
     }
 
@@ -74,7 +67,6 @@ class UsersController extends Controller
         abort_if(Gate::denies('user_show'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user->load('roles', 'group', 'country');
-
         return view('admin.users.show', compact('user'));
     }
 
@@ -83,14 +75,12 @@ class UsersController extends Controller
         abort_if(Gate::denies('user_delete'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user->delete();
-
         return back();
     }
 
     public function massDestroy(MassDestroyUserRequest $request)
     {
         User::whereIn('id', request('ids'))->delete();
-
         return response(null, Response::HTTP_NO_CONTENT);
     }
 }

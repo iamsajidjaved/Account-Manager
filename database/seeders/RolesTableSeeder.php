@@ -9,16 +9,16 @@ class RolesTableSeeder extends Seeder {
     public function run() {
         $roles = [
             [
-                'id'    => 1,
-                'title' => 'Admin',
-            ],
-            [
                 'id'    => 2,
                 'title' => 'Entry Person',
             ],
             [
                 'id'    => 3,
                 'title' => 'Approver',
+            ],
+            [
+                'id'    => 1,
+                'title' => 'Admin',
             ],
         ];
 

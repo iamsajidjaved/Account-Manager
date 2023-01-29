@@ -68,7 +68,7 @@
                 <span class="help-block">{{ trans('cruds.user.fields.group_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="country_id">{{ trans('cruds.user.fields.country') }}</label>
+                <label for="country_id" class="required">{{ trans('cruds.user.fields.country') }}</label>
                 <select class="form-control select2 {{ $errors->has('country') ? 'is-invalid' : '' }}" name="country_id" id="country_id">
                     @foreach($countries as $id => $entry)
                         <option value="{{ $id }}" {{ old('country_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>

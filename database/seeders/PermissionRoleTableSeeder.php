@@ -34,7 +34,18 @@ class PermissionRoleTableSeeder extends Seeder {
         ];
 
         $admin_permissions = Permission::whereIn( 'id', $admin_permissions_arr );
-        Role::findOrFail( 1 )->permissions()->sync( $admin_permissions->pluck( 'id' ) );
+        Role::findOrFail( 3 )->permissions()->sync( $admin_permissions->pluck( 'id' ) );
+
+        $approver_permissions_arr = [
+            24,
+            28,
+            29,
+            31,
+            26
+        ];
+
+        $approver_permissions = Permission::whereIn( 'id', $approver_permissions_arr );
+        Role::findOrFail( 2 )->permissions()->sync( $approver_permissions->pluck( 'id' ) );
 
         $entry_person_permissions_arr = [
             24,
@@ -47,17 +58,6 @@ class PermissionRoleTableSeeder extends Seeder {
         ];
 
         $user_permissions = Permission::whereIn( 'id', $entry_person_permissions_arr );
-        Role::findOrFail( 2 )->permissions()->sync( $user_permissions->pluck( 'id' ) );
-
-        $approver_permissions_arr = [
-            24,
-            28,
-            29,
-            31,
-            26
-        ];
-
-        $approver_permissions = Permission::whereIn( 'id', $approver_permissions_arr );
-        Role::findOrFail( 3 )->permissions()->sync( $approver_permissions->pluck( 'id' ) );
+        Role::findOrFail( 1 )->permissions()->sync( $user_permissions->pluck( 'id' ) );
     }
 }

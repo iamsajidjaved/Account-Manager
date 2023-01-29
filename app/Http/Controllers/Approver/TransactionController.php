@@ -27,7 +27,7 @@ class TransactionController extends Controller {
         if ( in_array( 'Approver', $roles ) ) {
             $country = $user->country;
             $banks = $user->country->countryBanks->pluck( 'id' )->toArray();
-            $transactions = Transaction::whereIn( 'bank_id', $banks )->where( 'transaction_type', 'Deposit' )->where( 'status', 'Pending' )->latest()->take( 5 )->get();
+            $transactions = Transaction::whereIn( 'bank_id', $banks )->where( 'transaction_type', 'Deposit' )->where( 'status', 'Pending' )->latest()->get();
             return view( 'approver.index', compact( 'transactions', 'bank_id' ) );
         }
     }
