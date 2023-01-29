@@ -45,7 +45,7 @@ class TransactionController extends Controller
             $table->addColumn('placeholder', '&nbsp;');
             $table->addColumn('actions', '&nbsp;');
 
-            $table->editColumn('actions', function ($row) {
+            $table->editColumn('actions', function ($row) use ($roles){
                 $viewGate = 'transaction_show';
                 $editGate = 'transaction_edit';
                 $deleteGate = 'transaction_delete';
@@ -58,21 +58,26 @@ class TransactionController extends Controller
                         'row'
                     ));
                 }else{
-                    return view('partials.datatablesActions', compact(
-                        'viewGate',
-                        'editGate',
-                        'deleteGate',
-                        'crudRoutePart',
-                        'row'
-                    ));
+                    if(in_array('Admin', $roles)){
+                        return view('partials.datatablesActions', compact(
+                            'viewGate',
+                            'editGate',
+                            'deleteGate',
+                            'crudRoutePart',
+                            'row'
+                        ));
+                    }else{
+                        return view('partials.datatablesReadOnlyActions', compact(
+                            'viewGate',
+                            'crudRoutePart',
+                            'row'
+                        ));
+                    }
                 }
             });
 
             $table->editColumn('id', function ($row) {
                 return $row->id ? $row->id : '';
-            });
-            $table->editColumn('transaction_type', function ($row) {
-                return $row->transaction_type ? Transaction::TRANSACTION_TYPE_RADIO[$row->transaction_type] : '';
             });
             $table->editColumn('customer_name', function ($row) {
                 return $row->customer_name ? $row->customer_name : '';
@@ -82,6 +87,9 @@ class TransactionController extends Controller
             });
             $table->editColumn('reference', function ($row) {
                 return $row->reference ? $row->reference : '';
+            });
+            $table->editColumn('deposit_no', function ($row) {
+                return $row->deposit_no ? $row->deposit_no : '';
             });
             $table->editColumn('status', function ($row) {
                 return $row->status ? Transaction::STATUS_SELECT[$row->status] : '';
@@ -95,95 +103,14 @@ class TransactionController extends Controller
         return view('admin.transactions.index');
     }
 
-    public function create(Request $request, $bank_id)
-    {
-        abort_if(Gate::denies('transaction_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        $user = Auth::user();
-        $roles = $user->roles()->pluck('title')->toArray();
-
-
-        if(in_array('Entry Person', $roles)){
-            // $banks = Bank::where('group_id', $user->group_id)->pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-            $group = $user->group;
-            $banks = $group->banks->pluck('id')->toArray();
-            $transactions = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->get();
-            return view('admin.transactions.create', compact('transactions'));
-        }else{
-            $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-        }
-
-        return view('admin.transactions.create', compact('banks'));
-    }
-
-    public function store(StoreTransactionRequest $request)
-    {
-        return DB::transaction(function () use ($request){
-
-            $transaction_type = $request->transaction_type;
-            $bank_id = $request->bank_id;
-            $amount = $request->amount;
-
-            if($transaction_type=="Withdrawal"){
-                if(BankController::validTransaction($bank_id, $amount)){
-
-                    Session::flash('message', 'The selected bank balance is low for this transaction ');
-                    return view('admin.transactions.index');
-                }
-            }
-
-            $bank = Bank::find($bank_id);
-            if($transaction_type=="Withdrawal"){
-                $request->request->add(['status' => 'Approved']);
-                $bank->balance = $bank->balance - $amount;
-            }else if($transaction_type=="Deposit"){
-                $request->request->add(['status' => 'Pending']);
-                $bank->balance = $bank->balance + $amount;
-            }
-            $bank->save();
-
-            $request->request->add(['entry_user_id' => Auth::id()]);
-            $request->request->add(['entry_datetime' => now()]);
-
-            $transaction = Transaction::create($request->all());
-
-            return redirect()->route('admin.transactions.index');
-        });
-
-
-    }
-
     public function edit(Transaction $transaction)
     {
         abort_if(Gate::denies('transaction_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
-        $user = Auth::user();
-        $roles = $user->roles()->pluck('title')->toArray();
+        $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
 
-            if(in_array('Entry Person', $roles)){
-                $group = $user->group;
-                $banks = $group->banks->pluck('id')->toArray();
-                if(in_array($transaction->bank_id, $banks)){
-                    $banks = Bank::whereIn('id', $banks)->pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-                }else{
-                    Session::flash('message', 'You are not allowed to edit this transaction. ');
-                    return view('admin.transactions.index');
-                }
-            }else if(in_array('Approver', $roles)){
-                $country = $user->country;
-                $banks = $user->country->countryBanks->pluck('id')->toArray();
-                if(in_array($transaction->bank_id, $banks)){
-                $banks = Bank::whereIn('id', $banks)->pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-                }else{
-                    Session::flash('message', 'You are not allowed to edit this transaction. ');
-                    return view('admin.transactions.index');
-                }
-            } else{
-                $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-            }
-
-            $transaction->load('bank');
-            return view('admin.transactions.edit', compact('banks', 'transaction'));
+        $transaction->load('bank');
+        return view('admin.transactions.edit', compact('banks', 'transaction'));
     }
 
     public function update(UpdateTransactionRequest $request, Transaction $transaction)

@@ -13,9 +13,6 @@
                         {{ trans('cruds.transaction.fields.id') }}
                     </th>
                     <th>
-                        {{ trans('cruds.transaction.fields.transaction_type') }}
-                    </th>
-                    <th>
                         {{ trans('cruds.transaction.fields.customer_name') }}
                     </th>
                     <th>
@@ -23,6 +20,9 @@
                     </th>
                     <th>
                         {{ trans('cruds.transaction.fields.reference') }}
+                    </th>
+                    <th>
+                        {{ trans('cruds.transaction.fields.deposit_no') }}
                     </th>
                     <th>
                         {{ trans('cruds.transaction.fields.status') }}
@@ -49,10 +49,10 @@ $(function () {
     ajax: "{{ route('admin.transactions.index') }}",
     columns: [
         { data: 'id', name: 'id' },
-        { data: 'transaction_type', name: 'transaction_type' },
         { data: 'customer_name', name: 'customer_name' },
         { data: 'amount', name: 'amount' },
         { data: 'reference', name: 'reference' },
+        { data: 'deposit_no', name: 'deposit_no' },
         { data: 'status', name: 'status' },
         { data: 'actions', name: '{{ trans('global.actions') }}' }
     ],
@@ -70,3 +70,6 @@ $(function () {
 
 </script>
 @endsection
+
+
+

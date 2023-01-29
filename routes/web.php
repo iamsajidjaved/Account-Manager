@@ -8,7 +8,6 @@ Route::get('/home', function () {
     if (session('status')) {
         return redirect()->route('admin.home')->with('status', session('status'));
     }
-
     return redirect()->route('admin.home');
 });
 
@@ -16,26 +15,11 @@ Auth::routes(['register' => false]);
 
 Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', '2fa']], function () {
     Route::get('/', 'HomeController@index')->name('home');
-    // Permissions
-    Route::resource('permissions', 'PermissionsController');
-
-    // Roles
+    Route::resource('permissions', 'PermissionsController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
     Route::resource('roles', 'RolesController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
-
-    // Users
     Route::resource('users', 'UsersController');
-
-    // Countries
-    Route::resource('countries', 'CountriesController');
-
-    // Bank
     Route::resource('banks', 'BankController');
-
-    // Transaction
-    Route::get('transactions/create/{bank_id}', 'TransactionController@create')->name('transactions.create');
-    Route::resource('transactions', 'TransactionController',['except' => ['create']]);
-
-    // Group
+    Route::resource('transactions', 'TransactionController', ['except' => ['create','store']]);
     Route::resource('groups', 'GroupController');
 
     Route::get('messenger', 'MessengerController@index')->name('messenger.index');
