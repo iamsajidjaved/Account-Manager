@@ -34,32 +34,6 @@ class WithdrawalTransactionController extends Controller
         }
     }
 
-    public function store(Request $request)
-    {
-        abort_if(Gate::denies('transaction_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
-
-        return DB::transaction(function () use ($request){
-
-            $bank_id = $request->bank_id;
-            $amount = $request->amount;
-
-            $request->request->add(['transaction_type' => 'Withdrawal']);
-            $request->request->add(['status' => 'Approved']);
-
-
-            $bank = Bank::find($bank_id);
-            $bank->balance = $bank->balance - $amount;
-            $bank->save();
-
-            $request->request->add(['entry_user_id' => Auth::id()]);
-            $request->request->add(['entry_datetime' => now()]);
-
-            $transaction = Transaction::create($request->all());
-
-            return back();
-        });
-    }
-
     public function update(Request $request)
     {
 

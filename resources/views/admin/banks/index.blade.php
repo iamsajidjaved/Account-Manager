@@ -31,9 +31,11 @@
                         <th>
                             {{ trans('cruds.bank.fields.group') }}
                         </th>
-                        <th>
-                            &nbsp;
-                        </th>
+                        @if(in_array( 'Entry Person', $roles) || in_array( 'Approver', $roles ))
+                            <th>
+                                Transaction
+                            </th>
+                        @endif
                         <th>
                             &nbsp;
                         </th>
@@ -54,16 +56,28 @@
                             <td>
                                 {{ $bank->group->group_name ?? '' }}
                             </td>
-                            <td class="text-center">
-                                @can('transaction_create')
-                                    <a class="btn btn-xs btn-primary" href="{{ route('entryperson.transactions.deposit.create', $bank->id) }}">
-                                        Deposit
-                                    </a>
-                                    <a class="btn btn-xs btn-primary" href="{{ route('entryperson.transactions.withdrawal.create', $bank->id) }}">
-                                        Withdrawal
-                                    </a>
-                                @endcan
-                            </td>
+                            @if(in_array( 'Entry Person', $roles) || in_array( 'Approver', $roles ))
+                                <td class="text-center">
+
+                                        @if ( in_array( 'Entry Person', $roles ) )
+                                            @can('transaction_create')
+                                                <a class="btn btn-xs btn-primary" href="{{ route('entryperson.transactions.deposit.create', $bank->id) }}">
+                                                    Deposit
+                                                </a>
+                                                <a class="btn btn-xs btn-primary" href="{{ route('entryperson.transactions.withdrawal.create', $bank->id) }}">
+                                                    Withdrawal
+                                                </a>
+                                            @endcan
+                                        @else
+                                            @can('transaction_edit')
+                                                <a class="btn btn-xs btn-primary" href="{{ route('approver.transactions.index', $bank->id) }}">
+                                                    Transactions
+                                                </a>
+                                            @endcan
+                                        @endif
+                                </td>
+                            @endif
+
                             <td class="text-center">
                                 @can('bank_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.banks.show', $bank->id) }}">

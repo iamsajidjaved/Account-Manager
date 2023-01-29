@@ -53,7 +53,8 @@ class PermissionRoleTableSeeder extends Seeder {
             24,
             28,
             29,
-            31
+            31,
+            26
         ];
 
         $approver_permissions = Permission::whereIn( 'id', $approver_permissions_arr );

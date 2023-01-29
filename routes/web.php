@@ -1,6 +1,7 @@
 <?php
 use App\Http\Controllers\EntryPerson\DepositTransactionController;
 use App\Http\Controllers\EntryPerson\WithdrawalTransactionController;
+use App\Http\Controllers\Approver\TransactionController as ApproverTransactionController;
 
 Route::redirect('/', '/login');
 Route::get('/home', function () {
@@ -57,6 +58,12 @@ Route::group(['prefix' => 'entry-person', 'as' => 'entryperson.', 'namespace' =>
     Route::get('transactions/withdrawal/create/{bank_id}', 'WithdrawalTransactionController@create')->name('transactions.withdrawal.create');
     Route::post('transactions/withdrawal/update', [WithdrawalTransactionController::class, 'update'])->name('transactions.withdrawal.update');
     Route::post('transactions/withdrawal/store', [WithdrawalTransactionController::class, 'store'])->name('transactions.withdrawal.store');
+});
+
+Route::group(['prefix' => 'approver', 'as' => 'approver.', 'namespace' => 'Approver', 'middleware' => ['auth', '2fa']], function () {
+    // Transaction
+    Route::get('transactions/index/{bank_id}', [ApproverTransactionController::class, 'index'])->name('transactions.index');
+    Route::post('transactions/update', [ApproverTransactionController::class, 'update'])->name('transactions.update');
 });
 
 Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth', '2fa']], function () {
