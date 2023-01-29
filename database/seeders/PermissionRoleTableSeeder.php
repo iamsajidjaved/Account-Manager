@@ -6,10 +6,8 @@ use App\Models\Permission;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 
-class PermissionRoleTableSeeder extends Seeder
- {
-    public function run()
- {
+class PermissionRoleTableSeeder extends Seeder {
+    public function run() {
         $admin_permissions_arr = [
             1,
             12,
