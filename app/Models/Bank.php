@@ -7,8 +7,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Bank extends Model
-{
+class Bank extends Model {
     use SoftDeletes;
     use HasFactory;
 
@@ -30,18 +29,19 @@ class Bank extends Model
         'deleted_at',
     ];
 
-    public function country()
-    {
-        return $this->belongsTo(Country::class, 'country_id');
+    public function country() {
+        return $this->belongsTo( Country::class, 'country_id' );
     }
 
-    public function group()
-    {
-        return $this->belongsTo(Group::class, 'group_id');
+    public function group() {
+        return $this->belongsTo( Group::class, 'group_id' );
     }
 
-    protected function serializeDate(DateTimeInterface $date)
-    {
-        return $date->format('Y-m-d H:i:s');
+    public function transactions() {
+        return $this->hasMany( Transaction::class, 'bank_id' );
+    }
+
+    protected function serializeDate( DateTimeInterface $date ) {
+        return $date->format( 'Y-m-d H:i:s' );
     }
 }

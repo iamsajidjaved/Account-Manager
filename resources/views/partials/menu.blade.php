@@ -16,16 +16,16 @@
             </a>
         </li>
         @can('user_management_access')
-                    @can('user_access')
-                        <li class="c-sidebar-nav-item">
-                            <a href="{{ route("admin.users.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/users") || request()->is("admin/users/*") ? "c-active" : "" }}">
-                                <i class="fa-fw fas fa-user c-sidebar-nav-icon">
+            @can('user_access')
+                <li class="c-sidebar-nav-item">
+                    <a href="{{ route("admin.users.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/users") || request()->is("admin/users/*") ? "c-active" : "" }}">
+                        <i class="fa-fw fas fa-user c-sidebar-nav-icon">
 
-                                </i>
-                                {{ trans('cruds.user.title') }}
-                            </a>
-                        </li>
-                    @endcan
+                        </i>
+                        Users
+                    </a>
+                </li>
+            @endcan
         @endcan
         @can('group_access')
             <li class="c-sidebar-nav-item">
@@ -33,17 +33,7 @@
                     <i class="fa-fw fas fa-users-cog c-sidebar-nav-icon">
 
                     </i>
-                    {{ trans('cruds.group.title') }}
-                </a>
-            </li>
-        @endcan
-        @can('country_access')
-            <li class="c-sidebar-nav-item">
-                <a href="{{ route("admin.countries.index") }}" class="c-sidebar-nav-link {{ request()->is("admin/countries") || request()->is("admin/countries/*") ? "c-active" : "" }}">
-                    <i class="fa-fw fas fa-flag c-sidebar-nav-icon">
-
-                    </i>
-                    {{ trans('cruds.country.title') }}
+                    Groups
                 </a>
             </li>
         @endcan
@@ -53,7 +43,7 @@
                     <i class="fa-fw fas fa-university c-sidebar-nav-icon">
 
                     </i>
-                    {{ trans('cruds.bank.title') }}
+                    Banks
                 </a>
             </li>
         @endcan
@@ -63,7 +53,7 @@
                     <i class="fa-fw fas fa-clipboard-list c-sidebar-nav-icon">
 
                     </i>
-                    {{ trans('cruds.transaction.title') }}
+                    Transactions
                 </a>
             </li>
         @endcan

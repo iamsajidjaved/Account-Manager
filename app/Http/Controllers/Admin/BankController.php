@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MassDestroyBankRequest;
 use App\Http\Requests\StoreBankRequest;
 use App\Http\Requests\UpdateBankRequest;
 use App\Models\Bank;
@@ -33,7 +32,7 @@ class BankController extends Controller {
             $banks = Bank::with( [ 'country', 'group' ] )->get();
         }
 
-        $banks = Bank::with( [ 'country', 'group' ] )->get();
+        $banks = Bank::withCount('transactions')->with( [ 'country', 'group' ] )->get();
 
         return view( 'admin.banks.index', compact( 'banks', 'roles' ) );
     }
@@ -86,23 +85,5 @@ class BankController extends Controller {
         $bank->delete();
 
         return back();
-    }
-
-    public function massDestroy( MassDestroyBankRequest $request ) {
-        Bank::whereIn( 'id', request( 'ids' ) )->delete();
-
-        return response( null, Response::HTTP_NO_CONTENT );
-    }
-
-    public static function validTransaction( $bank_id, $amount ) {
-
-        $bank = Bank::find( $bank_id );
-        $balance = $bank->balance;
-
-        if ( ( $balance-$amount ) < 0 ) {
-            return true;
-        } else {
-            return false;
-        }
     }
 }

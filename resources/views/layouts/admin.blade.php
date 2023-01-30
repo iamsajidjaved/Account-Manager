@@ -128,14 +128,6 @@
         dom: 'lBfrtip<"actions">',
         buttons: [
           {
-            extend: 'csv',
-            className: 'btn-default',
-            text: csvButtonTrans,
-            exportOptions: {
-              columns: ':visible'
-            }
-          },
-          {
             extend: 'excel',
             className: 'btn-default',
             text: excelButtonTrans,

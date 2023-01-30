@@ -31,13 +31,13 @@ class TransactionController extends Controller
             if(in_array('Entry Person', $roles)){
                 $group = $user->group;
                 $banks = $group->banks->pluck('id')->toArray();
-                $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->select(sprintf('%s.*', (new Transaction())->table));
+                $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->latest()->select(sprintf('%s.*', (new Transaction())->table));
             } else if(in_array('Approver', $roles)){
                 $country = $user->country;
                 $banks = $user->country->countryBanks->pluck('id')->toArray();
-                $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->select(sprintf('%s.*', (new Transaction())->table));
+                $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->latest()->select(sprintf('%s.*', (new Transaction())->table));
             }else{
-                $query = Transaction::with(['bank', 'entry_user', 'approver'])->select(sprintf('%s.*', (new Transaction())->table));
+                $query = Transaction::with(['bank', 'entry_user', 'approver'])->latest()->select(sprintf('%s.*', (new Transaction())->table));
             }
 
             $table = Datatables::of($query);
@@ -50,29 +50,20 @@ class TransactionController extends Controller
                 $editGate = 'transaction_edit';
                 $deleteGate = 'transaction_delete';
                 $crudRoutePart = 'transactions';
-
-                if($row->status == "Approved" || $row->status == "Void"){
+                if(in_array('Admin', $roles)){
+                    return view('partials.datatablesActions', compact(
+                        'viewGate',
+                        'editGate',
+                        'deleteGate',
+                        'crudRoutePart',
+                        'row'
+                    ));
+                }else{
                     return view('partials.datatablesReadOnlyActions', compact(
                         'viewGate',
                         'crudRoutePart',
                         'row'
                     ));
-                }else{
-                    if(in_array('Admin', $roles)){
-                        return view('partials.datatablesActions', compact(
-                            'viewGate',
-                            'editGate',
-                            'deleteGate',
-                            'crudRoutePart',
-                            'row'
-                        ));
-                    }else{
-                        return view('partials.datatablesReadOnlyActions', compact(
-                            'viewGate',
-                            'crudRoutePart',
-                            'row'
-                        ));
-                    }
                 }
             });
 
@@ -118,6 +109,7 @@ class TransactionController extends Controller
         DB::transaction(function () use ($request, $transaction) {
 
             $transaction_type = $transaction->transaction_type;
+            $transaction_status = $transaction->status;
             $transaction_bank_id = $transaction->bank_id;
             $transaction_amount = $transaction->amount;
 
@@ -128,22 +120,15 @@ class TransactionController extends Controller
 
             $bank = Bank::find($transaction_bank_id);
 
-            // make sure the bank balance is not less than zero
-            if((BankController::validTransaction($request_bank_id, $transaction_amount) && ($request_amount-$bank->balance)<0)){
-                $banks = Bank::pluck('bank_name', 'id')->prepend(trans('global.pleaseSelect'), '');
-                $transaction->load('bank');
-
-                Session::flash('message', 'The selected bank balance is low for this transaction ');
-                return view('admin.transactions.edit', compact('banks', 'transaction'));
-            }
-
             // undo old operation
-            if($transaction_type=="Withdrawal"){
-                $bank->balance = $bank->balance + $transaction_amount;
-            }else if($transaction_type=="Deposit"){
-                $bank->balance = $bank->balance - $transaction_amount;
+            if($transaction_status=="Approved" || $transaction_status=="Pending"){
+                if($transaction_type=="Withdrawal"){
+                    $bank->balance = $bank->balance + $transaction_amount;
+                }else if($transaction_type=="Deposit"){
+                    $bank->balance = $bank->balance - $transaction_amount;
+                }
+                $bank->save();
             }
-            $bank->save();
 
             // do new operation
             if($status=="Approved" || $status=="Pending"){
@@ -162,7 +147,6 @@ class TransactionController extends Controller
             }
 
             $transaction->update($request->all());
-
         });
 
         return redirect()->route('admin.transactions.index');
@@ -194,13 +178,6 @@ class TransactionController extends Controller
                 $transaction_type = $transaction->transaction_type;
                 $amount = $transaction->amount;
                 $bank_id = $transaction->bank_id;
-
-                if($transaction_type=="Deposit"){
-                    if(BankController::validTransaction($bank_id, $amount)){
-                        Session::flash('message', 'The selected bank balance is low for this transaction ');
-                        return back();
-                    }
-                }
 
                 $bank = Bank::find($bank_id);
                 if($transaction_type=="Withdrawal"){

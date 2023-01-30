@@ -18,7 +18,6 @@
                         {{ $errors->first('customer_name') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.customer_name_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="amount">{{ trans('cruds.transaction.fields.amount') }}</label>
@@ -28,7 +27,6 @@
                         {{ $errors->first('amount') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.amount_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="bank_id">{{ trans('cruds.transaction.fields.bank') }}</label>
@@ -42,7 +40,6 @@
                         {{ $errors->first('bank') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.bank_helper') }}</span>
             </div>
             <div class="form-group">
                 <label class="required" for="reference">{{ trans('cruds.transaction.fields.reference') }}</label>
@@ -52,10 +49,9 @@
                         {{ $errors->first('reference') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.reference_helper') }}</span>
             </div>
             <div class="form-group">
-                <label class="required">{{ trans('cruds.transaction.fields.status') }}</label>
+                <label class="required">Transaction Status</label>
                 <select class="form-control {{ $errors->has('status') ? 'is-invalid' : '' }}" name="status" id="status">
                     <option value disabled {{ old('status', null) === null ? 'selected' : '' }}>{{ trans('global.pleaseSelect') }}</option>
                     @foreach(App\Models\Transaction::STATUS_SELECT as $key => $label)
@@ -67,17 +63,15 @@
                         {{ $errors->first('status') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.status_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="deposit_no" class="required">{{ trans('cruds.transaction.fields.deposit_no') }}</label>
+                <label for="deposit_no">{{ trans('cruds.transaction.fields.deposit_no') }}</label>
                 <input class="form-control {{ $errors->has('deposit_no') ? 'is-invalid' : '' }}" type="text" name="deposit_no" id="deposit_no" value="{{ old('deposit_no', $transaction->deposit_no) }}">
                 @if($errors->has('deposit_no'))
                     <div class="invalid-feedback">
                         {{ $errors->first('deposit_no') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.deposit_no_helper') }}</span>
             </div>
             <div class="form-group">
                 <label for="approver_remarks">{{ trans('cruds.transaction.fields.approver_remarks') }}</label>
@@ -87,7 +81,6 @@
                         {{ $errors->first('approver_remarks') }}
                     </div>
                 @endif
-                <span class="help-block">{{ trans('cruds.transaction.fields.approver_remarks_helper') }}</span>
             </div>
             <div class="form-group">
                 <button class="btn btn-danger" type="submit">
