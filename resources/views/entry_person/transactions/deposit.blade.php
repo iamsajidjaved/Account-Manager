@@ -7,7 +7,7 @@
 @section('content')
 <div class="container-fluid card">
     <div class="card-header">
-        {{ trans('global.create') }} {{ trans('cruds.transaction.title_singular') }}
+        Create Deposit Transactions
     </div>
 
     <div class="card-body">

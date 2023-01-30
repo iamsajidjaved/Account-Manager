@@ -22,17 +22,15 @@ class BankController extends Controller {
 
         if ( in_array( 'Entry Person', $roles ) ) {
             $group = $user->group;
-            $banks = $group->banks->pluck( 'id' )->toArray();
-            $query = Bank::whereIn( 'id', $banks )->with( [ 'country', 'group' ] )->get();
+            $bank_ids = $group->banks->pluck( 'id' )->toArray();
+            $banks = Bank::whereIn( 'id', $bank_ids )->with( [ 'country', 'group' ] )->get();
         } else if ( in_array( 'Approver', $roles ) ) {
             $country = $user->country;
-            $banks = $user->country->countryBanks->pluck( 'id' )->toArray();
-            $query = Bank::whereIn( 'id', $banks )->with( [ 'country', 'group' ] )->get();
+            $bank_ids = $user->country->countryBanks->pluck( 'id' )->toArray();
+            $banks = Bank::whereIn( 'id', $bank_ids )->with( [ 'country', 'group' ] )->get();
         } else {
             $banks = Bank::with( [ 'country', 'group' ] )->get();
         }
-
-        $banks = Bank::withCount('transactions')->with( [ 'country', 'group' ] )->get();
 
         return view( 'admin.banks.index', compact( 'banks', 'roles' ) );
     }

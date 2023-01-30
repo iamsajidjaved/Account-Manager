@@ -40,17 +40,29 @@ class TransactionController extends Controller {
 
             $transaction = Transaction::find( $request->pk );
 
-            if ( $transaction->deposit_no == '' )
-
             if ( $name == 'status' ) {
                 if ( $transaction->deposit_no == '' ) {
                     return response()->json( [ 'success' => false ] );
                 }
 
                 $bank = $transaction->bank;
-                if ( $name == 'Void' || $name == 'Pending' ) {
-                    if ( $transaction->status = 'Approved' ) {
-                        $bank->balance = ( $bank->balance - $transaction->amount );
+                $transaction_status = $transaction->status;
+                $transaction_type = $transaction->transaction_type;
+                $transaction_amount = $transaction->amount;
+
+                if ( $transaction_status == 'Approved' ) {
+                    if ( $value == 'Void' ) {
+                        $bank->balance = $bank->balance - $transaction_amount;
+                        $bank->save();
+                    }
+                } else if ( $transaction_status == 'Void' ) {
+                    if ( $value == 'Approved' || $value == 'Pending' ) {
+                        $bank->balance = $bank->balance + $transaction_amount;
+                        $bank->save();
+                    }
+                } else if ( $transaction_status == 'Pending' ) {
+                    if ( $value == 'Void' ) {
+                        $bank->balance = $bank->balance - $transaction_amount;
                         $bank->save();
                     }
                 }

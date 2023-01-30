@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MassDestroyUserRequest;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
 use App\Models\Country;
@@ -76,11 +75,5 @@ class UsersController extends Controller
 
         $user->delete();
         return back();
-    }
-
-    public function massDestroy(MassDestroyUserRequest $request)
-    {
-        User::whereIn('id', request('ids'))->delete();
-        return response(null, Response::HTTP_NO_CONTENT);
     }
 }

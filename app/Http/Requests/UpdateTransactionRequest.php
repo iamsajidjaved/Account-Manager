@@ -46,12 +46,6 @@ class UpdateTransactionRequest extends FormRequest
                 'max:255',
                 'required',
             ],
-            'deposit_no' => [
-                'string',
-                'required',
-                'max:255',
-                'nullable',
-            ],
             'approver_remarks' => [
                 'string',
                 'max:255',
