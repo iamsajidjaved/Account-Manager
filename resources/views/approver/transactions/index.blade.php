@@ -29,9 +29,6 @@
                         <th>
                             Deposit ID
                         </th>
-                        <th>
-                            Status
-                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -53,16 +50,6 @@
                                 <a href="" class="update" data-name="deposit_no" data-type="text" data-pk="{{ $transaction->id }}" data-title="Deposit ID">
                                     {{ $transaction->deposit_no ?? '' }}
                                 </a>
-                            </td>
-                            <td>
-                                @if ($transaction->status=='Pending')
-                                    <a href="#" class="status" data-name="status" data-type="select" data-pk="{{ $transaction->id }}" data-title="Deposit ID">
-                                        {{ $transaction->status ?? '' }}
-                                    </a>
-                                @else
-                                    {{ $transaction->status ?? '' }}
-                                @endif
-
                             </td>
                         </tr>
                     @endforeach
@@ -90,31 +77,8 @@
     });
 
     $('.update').editable({
-        url: "{{ route('approver.transactions.update') }}",
-        validate: function(value) {
-        if($.trim(value) == '') {
-                return 'Enter a value';
-            }
-        }
+        url: "{{ route('approver.transactions.update') }}"
     });
-</script>
-<script>
-$(function(){
-    $('.status').editable({
-        url: "{{ route('approver.transactions.update') }}",
-        value: 'Pending',
-        source: [
-              {value: 'Pending', text: 'Pending'},
-              {value: 'Approved', text: 'Approved'},
-              {value: 'Void', text: 'Void'}
-        ],
-        success: function(response, newValue) {
-            if(response.success==false) {
-                alert('Please fill the deposit ID');
-            }
-        }
-    });
-});
 </script>
 <script>
 $(document).ready( function () {

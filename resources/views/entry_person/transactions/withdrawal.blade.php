@@ -7,13 +7,14 @@
 @section('content')
 <div class="container-fluid card">
     <div class="card-header">
-        Create Withdrawal Transaction
+        <span class="pull-left">Withdrawal Transaction</span>
+        <span class="pull-right">{{$bank->bank_name}} ({{$bank->balance}})</span>
     </div>
 
     <div class="card-body">
         <form class="form-row" method="POST" action="{{ route("entryperson.transactions.withdrawal.store") }}" enctype="multipart/form-data">
             @csrf
-            <input type="hidden" name="bank_id" id="bank_id" value="{{$bank_id}}" required>
+            <input type="hidden" name="bank_id" id="bank_id" value="{{$bank->id}}" required>
             <div class="form-group col-md-3">
                 <label class="required" for="customer_name">Beneficiary Name</label>
                 <input class="form-control {{ $errors->has('customer_name') ? 'is-invalid' : '' }}" type="text" name="customer_name" id="customer_name" value="{{ old('customer_name', '') }}" required>

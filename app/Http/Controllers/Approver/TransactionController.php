@@ -18,54 +18,39 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
 
 class TransactionController extends Controller {
-    public function index( Request $request, $bank_id ) {
+    public function index( Request $request ) {
         abort_if ( Gate::denies( 'transaction_edit' ), Response::HTTP_FORBIDDEN, '403 Forbidden' );
 
         $user = Auth::user();
-        $roles = $user->roles()->pluck( 'title' )->toArray();
+        $country = $user->country;
+        $banks = $user->country->countryBanks->pluck( 'id' )->toArray();
 
-        if ( in_array( 'Approver', $roles ) ) {
-            $country = $user->country;
-            $banks = $user->country->countryBanks->pluck( 'id' )->toArray();
-            $transactions = Transaction::whereIn( 'bank_id', $banks )->where( 'transaction_type', 'Deposit' )->where( 'status', 'Pending' )->latest()->get();
-            return view( 'approver.index', compact( 'transactions', 'bank_id' ) );
-        }
+        $transactions = Transaction::whereIn( 'bank_id', $banks )->where( 'transaction_type', 'Deposit' )->where( 'status', 'Pending' )->latest()->get();
+        return view( 'approver.transactions.index', compact( 'transactions', 'country' ) );
     }
 
     public function update( Request $request ) {
+
         if ( $request->ajax() ) {
 
             $name = $request->name;
             $value = $request->value;
 
+            $user = Auth::user();
+            $country = $user->country;
+            $banks = $user->country->countryBanks->pluck( 'id' )->toArray();
+
             $transaction = Transaction::find( $request->pk );
+            $bank = $transaction->bank;
 
-            if ( $name == 'status' ) {
-                if ( $transaction->deposit_no == '' ) {
-                    return response()->json( [ 'success' => false ] );
-                }
+            if ( !in_array( $bank->id, $banks ) ) {
+                return;
+            }
 
-                $bank = $transaction->bank;
-                $transaction_status = $transaction->status;
-                $transaction_type = $transaction->transaction_type;
-                $transaction_amount = $transaction->amount;
-
-                if ( $transaction_status == 'Approved' ) {
-                    if ( $value == 'Void' ) {
-                        $bank->balance = $bank->balance - $transaction_amount;
-                        $bank->save();
-                    }
-                } else if ( $transaction_status == 'Void' ) {
-                    if ( $value == 'Approved' || $value == 'Pending' ) {
-                        $bank->balance = $bank->balance + $transaction_amount;
-                        $bank->save();
-                    }
-                } else if ( $transaction_status == 'Pending' ) {
-                    if ( $value == 'Void' ) {
-                        $bank->balance = $bank->balance - $transaction_amount;
-                        $bank->save();
-                    }
-                }
+            if ( $value != '' ) {
+                $transaction->status = 'Approved';
+            } else {
+                $transaction->status = 'Pending';
             }
 
             $transaction->$name = $value;

@@ -3,19 +3,13 @@
 namespace App\Http\Controllers\EntryPerson;
 
 use App\Http\Controllers\Controller;
-use App\Http\Controllers\Admin\BankController;
-use App\Http\Requests\StoreTransactionRequest;
-use App\Http\Requests\UpdateTransactionRequest;
 use App\Models\Bank;
 use App\Models\Transaction;
-use App\Models\User;
 use Gate;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Session;
 
 class WithdrawalTransactionController extends Controller
 {
@@ -24,19 +18,30 @@ class WithdrawalTransactionController extends Controller
         abort_if(Gate::denies('transaction_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
 
         $user = Auth::user();
-        $roles = $user->roles()->pluck('title')->toArray();
+        $bank = Bank::find($bank_id);
 
-        if(in_array('Entry Person', $roles)){
-            $group = $user->group;
-            $banks = $group->banks->pluck('id')->toArray();
-            $transactions = Transaction::whereIn('bank_id', $banks)->where('transaction_type', 'Withdrawal')->latest()->take(5)->get();
-            return view('entry_person.transactions.withdrawal', compact('transactions','bank_id'));
+        $group = $user->group;
+        $banks = $group->banks->pluck('id')->toArray();
+
+        if(!in_array($request->bank_id, $banks)){
+            return;
         }
+
+        $transactions = Transaction::where('bank_id', $bank_id)->where('transaction_type', 'Withdrawal')->latest()->take(5)->get();
+        return view('entry_person.transactions.withdrawal', compact('transactions','bank'));
     }
 
     public function store(Request $request)
     {
         abort_if(Gate::denies('transaction_create'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $user = Auth::user();
+        $group = $user->group;
+        $banks = $group->banks->pluck('id')->toArray();
+
+        if(!in_array($request->bank_id, $banks)){
+            return;
+        }
 
         return DB::transaction(function () use ($request){
 
@@ -64,6 +69,11 @@ class WithdrawalTransactionController extends Controller
 
     public function update(Request $request)
     {
+        abort_if(Gate::denies('transaction_edit'), Response::HTTP_FORBIDDEN, '403 Forbidden');
+
+        $user = Auth::user();
+        $group = $user->group;
+        $banks = $group->banks->pluck('id')->toArray();
 
         if ($request->ajax()) {
 
@@ -71,10 +81,14 @@ class WithdrawalTransactionController extends Controller
             $value = $request->value;
 
             $transaction = Transaction::find($request->pk);
+            $bank = $transaction->bank;
+
+            if(!in_array($bank->id, $banks)){
+                return;
+            }
 
             if($name=='amount'){
                 // undo old bank balance change
-                $bank = $transaction->bank;
                 $bank->balance = ($bank->balance + $transaction->amount);
 
                 // update bank balance

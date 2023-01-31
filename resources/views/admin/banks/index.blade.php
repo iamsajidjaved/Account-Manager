@@ -4,14 +4,14 @@
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.banks.create') }}">
-                {{ trans('global.add') }} {{ trans('cruds.bank.title_singular') }}
+                Add Bank
             </a>
         </div>
     </div>
 @endcan
 <div class="card">
     <div class="card-header">
-        {{ trans('cruds.bank.title_singular') }} {{ trans('global.list') }}
+        Bank List
     </div>
 
     <div class="card-body">
@@ -20,22 +20,17 @@
                 <thead>
                     <tr>
                         <th>
-                            {{ trans('cruds.bank.fields.bank_name') }}
+                            Name
                         </th>
                         <th>
-                            {{ trans('cruds.bank.fields.balance') }}
+                            Balance
                         </th>
                         <th>
-                            {{ trans('cruds.bank.fields.country') }}
+                            Country
                         </th>
                         <th>
-                            {{ trans('cruds.bank.fields.group') }}
+                            Group
                         </th>
-                        @if(in_array( 'Entry Person', $roles) || in_array( 'Approver', $roles ))
-                            <th>
-                                Transaction
-                            </th>
-                        @endif
                         <th>
                             &nbsp;
                         </th>
@@ -56,27 +51,6 @@
                             <td>
                                 {{ $bank->group->group_name ?? '' }}
                             </td>
-                            @if(in_array( 'Entry Person', $roles) || in_array( 'Approver', $roles ))
-                                <td class="text-center">
-
-                                        @if ( in_array( 'Entry Person', $roles ) )
-                                            @can('transaction_create')
-                                                <a class="btn btn-xs btn-primary" href="{{ route('entryperson.transactions.deposit.create', $bank->id) }}">
-                                                    Deposit
-                                                </a>
-                                                <a class="btn btn-xs btn-primary" href="{{ route('entryperson.transactions.withdrawal.create', $bank->id) }}">
-                                                    Withdrawal
-                                                </a>
-                                            @endcan
-                                        @else
-                                            @can('transaction_edit')
-                                                <a class="btn btn-xs btn-primary" href="{{ route('approver.transactions.index', $bank->id) }}">
-                                                    Transactions
-                                                </a>
-                                            @endcan
-                                        @endif
-                                </td>
-                            @endif
 
                             <td class="text-center">
                                 @can('bank_show')

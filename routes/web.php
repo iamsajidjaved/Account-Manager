@@ -46,7 +46,7 @@ Route::group(['prefix' => 'entry-person', 'as' => 'entryperson.', 'namespace' =>
 
 Route::group(['prefix' => 'approver', 'as' => 'approver.', 'namespace' => 'Approver', 'middleware' => ['auth', '2fa']], function () {
     // Transaction
-    Route::get('transactions/index/{bank_id}', [ApproverTransactionController::class, 'index'])->name('transactions.index');
+    Route::get('transactions/index', [ApproverTransactionController::class, 'index'])->name('transactions.index');
     Route::post('transactions/update', [ApproverTransactionController::class, 'update'])->name('transactions.update');
 });
 

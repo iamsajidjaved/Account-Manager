@@ -17,22 +17,8 @@ class BankController extends Controller {
     public function index() {
         abort_if ( Gate::denies( 'bank_access' ), Response::HTTP_FORBIDDEN, '403 Forbidden' );
 
-        $user = Auth::user();
-        $roles = $user->roles()->pluck( 'title' )->toArray();
-
-        if ( in_array( 'Entry Person', $roles ) ) {
-            $group = $user->group;
-            $bank_ids = $group->banks->pluck( 'id' )->toArray();
-            $banks = Bank::whereIn( 'id', $bank_ids )->with( [ 'country', 'group' ] )->get();
-        } else if ( in_array( 'Approver', $roles ) ) {
-            $country = $user->country;
-            $bank_ids = $user->country->countryBanks->pluck( 'id' )->toArray();
-            $banks = Bank::whereIn( 'id', $bank_ids )->with( [ 'country', 'group' ] )->get();
-        } else {
-            $banks = Bank::with( [ 'country', 'group' ] )->get();
-        }
-
-        return view( 'admin.banks.index', compact( 'banks', 'roles' ) );
+        $banks = Bank::with( [ 'country', 'group' ] )->get();
+        return view( 'admin.banks.index', compact( 'banks') );
     }
 
     public function create() {

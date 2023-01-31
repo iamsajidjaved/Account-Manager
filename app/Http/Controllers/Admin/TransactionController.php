@@ -31,11 +31,11 @@ class TransactionController extends Controller
             if(in_array('Entry Person', $roles)){
                 $group = $user->group;
                 $banks = $group->banks->pluck('id')->toArray();
-                $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->latest()->select(sprintf('%s.*', (new Transaction())->table));
+                $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->latest()->latest(50)->select(sprintf('%s.*', (new Transaction())->table));
             } else if(in_array('Approver', $roles)){
                 $country = $user->country;
                 $banks = $user->country->countryBanks->pluck('id')->toArray();
-                $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->latest()->select(sprintf('%s.*', (new Transaction())->table));
+                $query = Transaction::whereIn('bank_id', $banks)->with(['bank', 'entry_user', 'approver'])->latest()->latest(50)->select(sprintf('%s.*', (new Transaction())->table));
             }else{
                 $query = Transaction::with(['bank', 'entry_user', 'approver'])->latest()->select(sprintf('%s.*', (new Transaction())->table));
             }
@@ -51,10 +51,9 @@ class TransactionController extends Controller
                 $deleteGate = 'transaction_delete';
                 $crudRoutePart = 'transactions';
                 if(in_array('Admin', $roles)){
-                    return view('partials.datatablesActions', compact(
+                    return view('partials.datatablesEditActions', compact(
                         'viewGate',
                         'editGate',
-                        'deleteGate',
                         'crudRoutePart',
                         'row'
                     ));
@@ -83,7 +82,7 @@ class TransactionController extends Controller
                 return $row->deposit_no ? $row->deposit_no : '';
             });
             $table->editColumn('status', function ($row) {
-                return $row->status ? Transaction::STATUS_SELECT[$row->status] : '';
+                // return $row->status ? Transaction::STATUS_SELECT[$row->status] : '';
             });
 
             $table->rawColumns(['actions', 'placeholder']);
