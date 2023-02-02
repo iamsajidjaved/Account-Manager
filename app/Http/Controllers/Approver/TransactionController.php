@@ -25,8 +25,10 @@ class TransactionController extends Controller {
         $country = $user->country;
         $banks = $user->country->countryBanks->pluck( 'id' )->toArray();
 
-        $transactions = Transaction::whereIn( 'bank_id', $banks )->where( 'transaction_type', 'Deposit' )->where( 'status', 'Pending' )->latest()->get();
-        return view( 'approver.transactions.index', compact( 'transactions', 'country' ) );
+        $pending_transactions = Transaction::whereIn( 'bank_id', $banks )->where( 'transaction_type', 'Deposit' )->where( 'status', 'Pending' )->get();
+        $recent_approved_transactions = Transaction::whereIn( 'bank_id', $banks )->where( 'transaction_type', 'Deposit' )->where( 'status', 'Approved' )->orderBy( 'updated_at', 'desc' )->take( 10 )->get();
+
+        return view( 'approver.transactions.index', compact( 'pending_transactions', 'recent_approved_transactions', 'country' ) );
     }
 
     public function update( Request $request ) {
@@ -56,7 +58,7 @@ class TransactionController extends Controller {
             $transaction->$name = $value;
             $transaction->save();
 
-            return response()->json( [ 'success' => true ] );
+            return response()->json( [ 'success' => true, 'pk' => $request->pk ] );
         }
     }
 }

@@ -14,7 +14,6 @@ class UsersTableSeeder extends Seeder {
                 'email'           => 'sajid@qooglobal.com',
                 'password'        => bcrypt( 'password' ),
                 'remember_token'  => null,
-                'two_factor_code' => '',
             ],
         ];
 
