@@ -3,6 +3,17 @@ use App\Http\Controllers\EntryPerson\DepositTransactionController;
 use App\Http\Controllers\EntryPerson\WithdrawalTransactionController;
 use App\Http\Controllers\Approver\TransactionController as ApproverTransactionController;
 
+Route::group(['prefix'=>'2fa'], function(){
+    Route::get('/','LoginSecurityController@show2faForm');
+    Route::post('/generateSecret','LoginSecurityController@generate2faSecret')->name('generate2faSecret');
+    Route::post('/enable2fa','LoginSecurityController@enable2fa')->name('enable2fa');
+    Route::post('/disable2fa','LoginSecurityController@disable2fa')->name('disable2fa');
+
+    // 2fa middleware
+    Route::post('/2faVerify', function () {
+        return redirect(URL()->previous());
+    })->name('2faVerify')->middleware('2fa');
+});
 
 Route::redirect('/', '/login');
 Route::get('/home', function () {
@@ -14,7 +25,7 @@ Route::get('/home', function () {
 
 Auth::routes(['register' => false]);
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth']], function () {
+Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', '2fa']], function () {
     Route::get('/', 'HomeController@index')->name('home');
     Route::resource('permissions', 'PermissionsController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
     Route::resource('roles', 'RolesController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
@@ -34,7 +45,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::get('messenger/{topic}/reply', 'MessengerController@showReply')->name('messenger.showReply');
 });
 
-Route::group(['prefix' => 'entry-person', 'as' => 'entryperson.', 'namespace' => 'EntryPerson', 'middleware' => ['auth']], function () {
+Route::group(['prefix' => 'entry-person', 'as' => 'entryperson.', 'namespace' => 'EntryPerson', 'middleware' => ['auth', '2fa']], function () {
     // Transaction
     Route::get('transactions/deposit/create/{bank_id}', [DepositTransactionController::class, 'create'])->name('transactions.deposit.create');
     Route::post('transactions/deposit/update', [DepositTransactionController::class, 'update'])->name('transactions.deposit.update');
@@ -45,13 +56,13 @@ Route::group(['prefix' => 'entry-person', 'as' => 'entryperson.', 'namespace' =>
     Route::post('transactions/withdrawal/store', [WithdrawalTransactionController::class, 'store'])->name('transactions.withdrawal.store');
 });
 
-Route::group(['prefix' => 'approver', 'as' => 'approver.', 'namespace' => 'Approver', 'middleware' => ['auth']], function () {
+Route::group(['prefix' => 'approver', 'as' => 'approver.', 'namespace' => 'Approver', 'middleware' => ['auth', '2fa']], function () {
     // Transaction
     Route::get('transactions/index', [ApproverTransactionController::class, 'index'])->name('transactions.index');
     Route::post('transactions/update', [ApproverTransactionController::class, 'update'])->name('transactions.update');
 });
 
-Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth']], function () {
+Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 'middleware' => ['auth', '2fa']], function () {
     // Change password
     if (file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php'))) {
         Route::get('password', 'ChangePasswordController@edit')->name('password.edit');
@@ -61,7 +72,7 @@ Route::group(['prefix' => 'profile', 'as' => 'profile.', 'namespace' => 'Auth', 
         Route::post('profile/two-factor', 'ChangePasswordController@toggleTwoFactor')->name('password.toggleTwoFactor');
     }
 });
-Route::group(['namespace' => 'Auth', 'middleware' => ['auth']], function () {
+Route::group(['namespace' => 'Auth', 'middleware' => ['auth', '2fa']], function () {
     // Two Factor Authentication
     if (file_exists(app_path('Http/Controllers/Auth/TwoFactorController.php'))) {
         Route::get('two-factor', 'TwoFactorController@show')->name('twoFactor.show');

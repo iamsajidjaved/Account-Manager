@@ -81,4 +81,8 @@ class User extends Authenticatable {
     protected function serializeDate( DateTimeInterface $date ) {
         return $date->format( 'Y-m-d H:i:s' );
     }
+
+    public function loginSecurity() {
+        return $this->hasOne( LoginSecurity::class );
+    }
 }
