@@ -39,10 +39,6 @@ class StoreUserRequest extends FormRequest
                 'required',
                 'integer',
             ],
-            'country_id' => [
-                'required',
-                'integer',
-            ],
         ];
     }
 }

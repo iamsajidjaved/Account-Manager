@@ -2,31 +2,27 @@
 @section('content')
 <div class="content">
     <div class="row">
-        @if(isset($banks))
-            @foreach  ($banks as $bank)
-            <div class="col-md-3">
-                <div class="card text-dark">
-                    <div class="card-header text-center">
-                        <i class="fa-fw fas fa-university fa-7x"></i>
-                        <h6 class="mt-2">{{$bank->bank_name}}</h6>
-                    </div>
-                    <div class="card-body row text-center">
-                        <div class="col">
-                            <a href="{{ route('entryperson.transactions.deposit.create', $bank->id) }}" class="text-decoration-none">
-                                <div class="text-uppercase text-muted small">Deposit</div>
-                            </a>
+        <div class="col-lg-12">
+            <div class="card">
+                <div class="card-header">
+                    Dashboard
+                </div>
+
+                <div class="card-body">
+                    @if(session('status'))
+                        <div class="alert alert-success" role="alert">
+                            {{ session('status') }}
                         </div>
-                        <div class="vr"></div>
-                        <div class="col">
-                            <a href="{{ route('entryperson.transactions.withdrawal.create', $bank->id) }}" class="text-decoration-none">
-                                <div class="text-uppercase text-muted small">Withdrawal</div>
-                            </a>
-                        </div>
-                    </div>
+                    @endif
+
+                    You are logged in!
                 </div>
             </div>
-            @endforeach
-        @endif
+        </div>
     </div>
 </div>
+@endsection
+@section('scripts')
+@parent
+
 @endsection

@@ -5,23 +5,21 @@ namespace Database\Seeders;
 use App\Models\Role;
 use Illuminate\Database\Seeder;
 
-class RolesTableSeeder extends Seeder {
-    public function run() {
+class RolesTableSeeder extends Seeder
+{
+    public function run()
+    {
         $roles = [
             [
                 'id'    => 1,
-                'title' => 'Entry Person',
+                'title' => 'Admin',
             ],
             [
                 'id'    => 2,
-                'title' => 'Approver',
-            ],
-            [
-                'id'    => 3,
-                'title' => 'Admin',
+                'title' => 'User',
             ],
         ];
 
-        Role::insert( $roles );
+        Role::insert($roles);
     }
 }
