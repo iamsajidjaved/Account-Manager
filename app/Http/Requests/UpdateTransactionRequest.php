@@ -27,11 +27,6 @@ class UpdateTransactionRequest extends FormRequest
                 'required',
                 'min:0',
             ],
-            'beneficiary_bank' => [
-                'string',
-                'max:255',
-                'nullable',
-            ],
             'bank_id' => [
                 'required',
                 'integer',
@@ -41,18 +36,19 @@ class UpdateTransactionRequest extends FormRequest
                 'max:255',
                 'required',
             ],
-            'status' => [
+            'deposit_no' => [
                 'string',
                 'max:255',
-                'required',
+                'nullable',
             ],
             'approver_remarks' => [
                 'string',
                 'max:255',
                 'nullable',
             ],
-            'approve_datetime' => [
-                'date_format:' . config('panel.date_format') . ' ' . config('panel.time_format'),
+            'beneficiary_bank' => [
+                'string',
+                'max:255',
                 'nullable',
             ],
         ];

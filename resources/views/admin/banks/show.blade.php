@@ -3,21 +3,21 @@
 
 <div class="card">
     <div class="card-header">
-        Show Bank
+        {{ trans('global.show') }} {{ trans('cruds.bank.title') }}
     </div>
 
     <div class="card-body">
         <div class="form-group">
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.banks.index') }}">
-                    Back to list
+                    {{ trans('global.back_to_list') }}
                 </a>
             </div>
             <table class="table table-bordered table-striped">
                 <tbody>
                     <tr>
                         <th>
-                            ID
+                            {{ trans('cruds.bank.fields.id') }}
                         </th>
                         <td>
                             {{ $bank->id }}
@@ -25,7 +25,7 @@
                     </tr>
                     <tr>
                         <th>
-                            Name
+                            {{ trans('cruds.bank.fields.bank_name') }}
                         </th>
                         <td>
                             {{ $bank->bank_name }}
@@ -33,7 +33,7 @@
                     </tr>
                     <tr>
                         <th>
-                            Balance
+                            {{ trans('cruds.bank.fields.balance') }}
                         </th>
                         <td>
                             {{ $bank->balance }}
@@ -41,7 +41,7 @@
                     </tr>
                     <tr>
                         <th>
-                            Country
+                            {{ trans('cruds.bank.fields.country') }}
                         </th>
                         <td>
                             {{ $bank->country->name ?? '' }}
@@ -49,7 +49,7 @@
                     </tr>
                     <tr>
                         <th>
-                            Group
+                            {{ trans('cruds.bank.fields.group') }}
                         </th>
                         <td>
                             {{ $bank->group->group_name ?? '' }}
@@ -59,7 +59,7 @@
             </table>
             <div class="form-group">
                 <a class="btn btn-default" href="{{ route('admin.banks.index') }}">
-                    Back to list
+                    {{ trans('global.back_to_list') }}
                 </a>
             </div>
         </div>

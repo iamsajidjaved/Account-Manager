@@ -5,8 +5,10 @@ namespace Database\Seeders;
 use App\Models\Permission;
 use Illuminate\Database\Seeder;
 
-class PermissionsTableSeeder extends Seeder {
-    public function run() {
+class PermissionsTableSeeder extends Seeder
+{
+    public function run()
+    {
         $permissions = [
             [
                 'id'    => 1,
@@ -34,130 +36,114 @@ class PermissionsTableSeeder extends Seeder {
             ],
             [
                 'id'    => 7,
-                'title' => 'role_create',
-            ],
-            [
-                'id'    => 8,
-                'title' => 'role_edit',
-            ],
-            [
-                'id'    => 9,
-                'title' => 'role_show',
-            ],
-            [
-                'id'    => 10,
-                'title' => 'role_delete',
-            ],
-            [
-                'id'    => 11,
                 'title' => 'role_access',
             ],
             [
-                'id'    => 12,
+                'id'    => 8,
                 'title' => 'user_create',
             ],
             [
-                'id'    => 13,
+                'id'    => 9,
                 'title' => 'user_edit',
             ],
             [
-                'id'    => 14,
+                'id'    => 10,
                 'title' => 'user_show',
             ],
             [
-                'id'    => 15,
+                'id'    => 11,
                 'title' => 'user_delete',
             ],
             [
-                'id'    => 16,
+                'id'    => 12,
                 'title' => 'user_access',
             ],
             [
-                'id'    => 17,
+                'id'    => 13,
                 'title' => 'country_create',
             ],
             [
-                'id'    => 18,
+                'id'    => 14,
                 'title' => 'country_edit',
             ],
             [
-                'id'    => 19,
+                'id'    => 15,
                 'title' => 'country_show',
             ],
             [
-                'id'    => 20,
+                'id'    => 16,
                 'title' => 'country_delete',
             ],
             [
-                'id'    => 21,
+                'id'    => 17,
                 'title' => 'country_access',
             ],
             [
-                'id'    => 22,
+                'id'    => 18,
                 'title' => 'bank_create',
             ],
             [
-                'id'    => 23,
+                'id'    => 19,
                 'title' => 'bank_edit',
             ],
             [
-                'id'    => 24,
+                'id'    => 20,
                 'title' => 'bank_show',
             ],
             [
-                'id'    => 25,
+                'id'    => 21,
                 'title' => 'bank_delete',
             ],
             [
-                'id'    => 26,
+                'id'    => 22,
                 'title' => 'bank_access',
             ],
             [
-                'id'    => 27,
+                'id'    => 23,
                 'title' => 'transaction_create',
             ],
             [
-                'id'    => 28,
+                'id'    => 24,
                 'title' => 'transaction_edit',
             ],
             [
-                'id'    => 29,
+                'id'    => 25,
                 'title' => 'transaction_show',
             ],
             [
-                'id'    => 30,
+                'id'    => 26,
                 'title' => 'transaction_delete',
             ],
             [
-                'id'    => 31,
+                'id'    => 27,
                 'title' => 'transaction_access',
             ],
             [
-                'id'    => 32,
+                'id'    => 28,
                 'title' => 'group_create',
             ],
             [
-                'id'    => 33,
+                'id'    => 29,
                 'title' => 'group_edit',
             ],
             [
-                'id'    => 34,
+                'id'    => 30,
                 'title' => 'group_show',
             ],
             [
-                'id'    => 35,
+                'id'    => 31,
                 'title' => 'group_delete',
             ],
             [
-                'id'    => 36,
+                'id'    => 32,
                 'title' => 'group_access',
             ],
             [
-                'id'    => 37,
+                'id'    => 33,
                 'title' => 'profile_password_edit',
             ],
         ];
 
-        Permission::insert( $permissions );
+        Permission::insert($permissions);
     }
 }

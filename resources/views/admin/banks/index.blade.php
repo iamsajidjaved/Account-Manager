@@ -4,14 +4,14 @@
     <div style="margin-bottom: 10px;" class="row">
         <div class="col-lg-12">
             <a class="btn btn-success" href="{{ route('admin.banks.create') }}">
-                Add Bank
+                {{ trans('global.add') }} {{ trans('cruds.bank.title_singular') }}
             </a>
         </div>
     </div>
 @endcan
 <div class="card">
     <div class="card-header">
-        Bank List
+        {{ trans('cruds.bank.title_singular') }} {{ trans('global.list') }}
     </div>
 
     <div class="card-body">
@@ -19,17 +19,23 @@
             <table class=" table table-bordered table-striped table-hover datatable datatable-Bank">
                 <thead>
                     <tr>
-                        <th>
-                            Name
+                        <th width="10">
+
                         </th>
                         <th>
-                            Balance
+                            {{ trans('cruds.bank.fields.id') }}
                         </th>
                         <th>
-                            Country
+                            {{ trans('cruds.bank.fields.bank_name') }}
                         </th>
                         <th>
-                            Group
+                            {{ trans('cruds.bank.fields.balance') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.bank.fields.country') }}
+                        </th>
+                        <th>
+                            {{ trans('cruds.bank.fields.group') }}
                         </th>
                         <th>
                             &nbsp;
@@ -39,6 +45,12 @@
                 <tbody>
                     @foreach($banks as $key => $bank)
                         <tr data-entry-id="{{ $bank->id }}">
+                            <td>
+
+                            </td>
+                            <td>
+                                {{ $bank->id ?? '' }}
+                            </td>
                             <td>
                                 {{ $bank->bank_name ?? '' }}
                             </td>
@@ -51,8 +63,7 @@
                             <td>
                                 {{ $bank->group->group_name ?? '' }}
                             </td>
-
-                            <td class="text-center">
+                            <td>
                                 @can('bank_show')
                                     <a class="btn btn-xs btn-primary" href="{{ route('admin.banks.show', $bank->id) }}">
                                         {{ trans('global.view') }}
@@ -66,13 +77,11 @@
                                 @endcan
 
                                 @can('bank_delete')
-                                    @if ($bank->transactions_count==0)
-                                        <form action="{{ route('admin.banks.destroy', $bank->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
-                                            <input type="hidden" name="_method" value="DELETE">
-                                            <input type="hidden" name="_token" value="{{ csrf_token() }}">
-                                            <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
-                                        </form>
-                                    @endif
+                                    <form action="{{ route('admin.banks.destroy', $bank->id) }}" method="POST" onsubmit="return confirm('{{ trans('global.areYouSure') }}');" style="display: inline-block;">
+                                        <input type="hidden" name="_method" value="DELETE">
+                                        <input type="hidden" name="_token" value="{{ csrf_token() }}">
+                                        <input type="submit" class="btn btn-xs btn-danger" value="{{ trans('global.delete') }}">
+                                    </form>
                                 @endcan
 
                             </td>
@@ -92,17 +101,49 @@
 @parent
 <script>
     $(function () {
-        $.extend(true, $.fn.dataTable.defaults, {
-            orderCellsTop: true,
-            order: [[ 1, 'desc' ]],
-            pageLength: 100,
-        });
-        let table = $('.datatable-Bank:not(.ajaxTable)').DataTable({})
-        $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
-            $($.fn.dataTable.tables(true)).DataTable()
-                .columns.adjust();
-        });
-    })
+  let dtButtons = $.extend(true, [], $.fn.dataTable.defaults.buttons)
+@can('bank_delete')
+  let deleteButtonTrans = '{{ trans('global.datatables.delete') }}'
+  let deleteButton = {
+    text: deleteButtonTrans,
+    url: "{{ route('admin.banks.massDestroy') }}",
+    className: 'btn-danger',
+    action: function (e, dt, node, config) {
+      var ids = $.map(dt.rows({ selected: true }).nodes(), function (entry) {
+          return $(entry).data('entry-id')
+      });
+
+      if (ids.length === 0) {
+        alert('{{ trans('global.datatables.zero_selected') }}')
+
+        return
+      }
+
+      if (confirm('{{ trans('global.areYouSure') }}')) {
+        $.ajax({
+          headers: {'x-csrf-token': _token},
+          method: 'POST',
+          url: config.url,
+          data: { ids: ids, _method: 'DELETE' }})
+          .done(function () { location.reload() })
+      }
+    }
+  }
+  dtButtons.push(deleteButton)
+@endcan
+
+  $.extend(true, $.fn.dataTable.defaults, {
+    orderCellsTop: true,
+    order: [[ 1, 'desc' ]],
+    pageLength: 100,
+  });
+  let table = $('.datatable-Bank:not(.ajaxTable)').DataTable({ buttons: dtButtons })
+  $('a[data-toggle="tab"]').on('shown.bs.tab click', function(e){
+      $($.fn.dataTable.tables(true)).DataTable()
+          .columns.adjust();
+  });
+  
+})
 
 </script>
 @endsection

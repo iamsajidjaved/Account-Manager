@@ -41,7 +41,11 @@
             </div>
             <div class="form-group">
                 <label class="required" for="roles">{{ trans('cruds.user.fields.roles') }}</label>
-                <select class="form-control select2 {{ $errors->has('roles') ? 'is-invalid' : '' }}" name="roles[]" id="roles" required>
+                <div style="padding-bottom: 4px">
+                    <span class="btn btn-info btn-xs select-all" style="border-radius: 0">{{ trans('global.select_all') }}</span>
+                    <span class="btn btn-info btn-xs deselect-all" style="border-radius: 0">{{ trans('global.deselect_all') }}</span>
+                </div>
+                <select class="form-control select2 {{ $errors->has('roles') ? 'is-invalid' : '' }}" name="roles[]" id="roles" multiple required>
                     @foreach($roles as $id => $role)
                         <option value="{{ $id }}" {{ in_array($id, old('roles', [])) ? 'selected' : '' }}>{{ $role }}</option>
                     @endforeach
@@ -68,7 +72,7 @@
                 <span class="help-block">{{ trans('cruds.user.fields.group_helper') }}</span>
             </div>
             <div class="form-group">
-                <label for="country_id" class="required">{{ trans('cruds.user.fields.country') }}</label>
+                <label for="country_id">{{ trans('cruds.user.fields.country') }}</label>
                 <select class="form-control select2 {{ $errors->has('country') ? 'is-invalid' : '' }}" name="country_id" id="country_id">
                     @foreach($countries as $id => $entry)
                         <option value="{{ $id }}" {{ old('country_id') == $id ? 'selected' : '' }}>{{ $entry }}</option>

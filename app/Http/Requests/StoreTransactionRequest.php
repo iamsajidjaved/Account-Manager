@@ -39,6 +39,11 @@ class StoreTransactionRequest extends FormRequest
                 'max:255',
                 'required',
             ],
+            'beneficiary_bank' => [
+                'string',
+                'max:255',
+                'nullable',
+            ],
         ];
     }
 }
