@@ -16,6 +16,8 @@ use Yajra\DataTables\Facades\DataTables;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Exports\TransactionsExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class TransactionController extends Controller
 {
@@ -195,6 +197,16 @@ class TransactionController extends Controller
         }
 
         return back();
+    }
 
+    public function export(Request $request)
+    {
+        $banks = Bank::all();
+        return view('admin.transactions.export', ['banks'=>$banks]);
+    }
+
+    public function processExport(Request $request)
+    {
+        return Excel::download(new TransactionsExport($request->bank_id, $request->start, $request->end), 'transactions.xlsx');
     }
 }

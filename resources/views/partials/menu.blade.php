@@ -57,6 +57,14 @@
                 </a>
             </li>
         @endcan
+        <li class="c-sidebar-nav-item">
+            <a href="{{ route("admin.transactions.export") }}" class="c-sidebar-nav-link {{ request()->is("admin/transactions/export") || request()->is("admin/transactions/export") ? "c-active" : "" }}">
+                <i class="fa-fw fas fa-clipboard-list c-sidebar-nav-icon">
+
+                </i>
+                Export
+            </a>
+        </li>
         @php($unread = \App\Models\QaTopic::unreadCount())
             <li class="c-sidebar-nav-item">
                 <a href="{{ route("admin.messenger.index") }}" class="{{ request()->is("admin/messenger") || request()->is("admin/messenger/*") ? "c-active" : "" }} c-sidebar-nav-link">
@@ -68,6 +76,14 @@
                         <strong>( {{ $unread }} )</strong>
                     @endif
 
+                </a>
+            </li>
+            <li class="c-sidebar-nav-item">
+                <a href="{{ url("/2fa") }}" class="c-sidebar-nav-link {{ request()->is("/2fa") ? "c-active" : "" }}">
+                    <i class="fa-fw fas fa-lock c-sidebar-nav-icon">
+
+                    </i>
+                    2FA
                 </a>
             </li>
             @if(file_exists(app_path('Http/Controllers/Auth/ChangePasswordController.php')))

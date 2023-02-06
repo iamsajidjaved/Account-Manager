@@ -25,7 +25,7 @@ Route::get('/home', function () {
 
 Auth::routes(['register' => false]);
 
-Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', '2fa']], function () {
+Route::group(['prefix' => '', 'as' => 'admin.', 'namespace' => 'Admin', 'middleware' => ['auth', '2fa']], function () {
     Route::get('/', 'HomeController@index')->name('home');
     Route::resource('permissions', 'PermissionsController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
     Route::resource('roles', 'RolesController', ['except' => ['create', 'store', 'edit', 'update', 'show', 'destroy']]);
@@ -33,6 +33,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.', 'namespace' => 'Admin', 'mi
     Route::resource('banks', 'BankController');
     Route::resource('transactions', 'TransactionController', ['except' => ['create','store']]);
     Route::resource('groups', 'GroupController');
+
+    Route::get('export', 'TransactionController@export')->name('transactions.export');
+    Route::post('process-export', 'TransactionController@processExport')->name('transactions.process-export');
 
     Route::get('messenger', 'MessengerController@index')->name('messenger.index');
     Route::get('messenger/create', 'MessengerController@createTopic')->name('messenger.createTopic');

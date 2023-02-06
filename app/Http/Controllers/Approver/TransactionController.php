@@ -46,7 +46,7 @@ class TransactionController extends Controller {
             $bank = $transaction->bank;
 
             if ( !in_array( $bank->id, $banks ) ) {
-                return;
+                return redirect()->route( 'admin.home' );
             }
 
             if ( $value != '' ) {

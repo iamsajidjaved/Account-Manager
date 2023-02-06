@@ -24,7 +24,7 @@ class WithdrawalTransactionController extends Controller
         $banks = $group->banks->pluck('id')->toArray();
 
         if(!in_array($request->bank_id, $banks)){
-            return;
+            return redirect()->route( 'admin.home' );
         }
 
         $transactions = Transaction::where('bank_id', $bank_id)->where('transaction_type', 'Withdrawal')->latest()->take(5)->get();
@@ -40,7 +40,7 @@ class WithdrawalTransactionController extends Controller
         $banks = $group->banks->pluck('id')->toArray();
 
         if(!in_array($request->bank_id, $banks)){
-            return;
+            return redirect()->route( 'admin.home' );
         }
 
         return DB::transaction(function () use ($request){
@@ -84,7 +84,7 @@ class WithdrawalTransactionController extends Controller
             $bank = $transaction->bank;
 
             if(!in_array($bank->id, $banks)){
-                return;
+                return redirect()->route( 'admin.home' );
             }
 
             if($name=='amount'){
