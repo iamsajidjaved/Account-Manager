@@ -48,8 +48,11 @@
                                     Enable 2FA
                                 </button>
                             </form>
-                        @elseif($data['user']->loginSecurity->google2fa_enable)
+                            @elseif($data['user']->loginSecurity->google2fa_enable)
                             <div class="alert alert-success">
+                                2FA is currently <strong>enabled</strong> on your account.
+                            </div>
+                            <!-- <div class="alert alert-success">
                                 2FA is currently <strong>enabled</strong> on your account.
                             </div>
                             <p>If you are looking to disable Two Factor Authentication. Please confirm your password and Click Disable 2FA Button.</p>
@@ -65,7 +68,7 @@
                                         @endif
                                 </div>
                                 <button type="submit" class="btn btn-primary ">Disable 2FA</button>
-                            </form>
+                            </form> -->
                         @endif
                     </div>
                 </div>
